@@ -1,9 +1,24 @@
-import { Box, Typography, Stack, Grid, TextField, Button } from '@mui/material'
+import { Typography, Stack, Grid, TextField, Button, CircularProgress } from '@mui/material'
 import React, { useState } from 'react'
-import MainLayout from '../layouts/MainLayout'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { createFood } from '../features/foods/foodSlice'
 function FoodDonationScreen() {
-
-    const [foodInfo, setFoodInfo] = useState({})
+    const { isLoading } = useSelector(state => state.food)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [foodInfo, setFoodInfo] = useState({
+        address: '',
+        description: '',
+        foodName: '',
+        area: '',
+        location: {
+            lat: '',
+            lng: '',
+        },
+    })
+    const { address, location, description, area, foodName } = foodInfo
 
     const handleInputChange = (e) => {
         const newFoodInfo = { ...foodInfo }
@@ -11,184 +26,201 @@ function FoodDonationScreen() {
         setFoodInfo(newFoodInfo);
     }
 
-    const handleLocationInputChange = (e) => {
+    const handleSubmit = (e) => {
+        dispatch(createFood(foodInfo))
+            .unwrap()
+            .then(() => {
+                toast.success('Food added')
+                setFoodInfo({
+                    address: '',
+                    description: '',
+                    foodName: '',
+                    area: '',
+                    location: {
+                        lat: '',
+                        lng: '',
+                    },
+                })
+                navigate('/donations')
+                
+            })
+        e.preventDefault()
+    }
+
+    //Access Location from user
+    const getLocation = (position) => {
         const newFoodInfo = { ...foodInfo }
         newFoodInfo.location = {
-            ...foodInfo.location,
-            [e.target.name]: Number(e.target.value)
+            lat: +position.coords.latitude,
+            lng: +position.coords.longitude
         };
         setFoodInfo(newFoodInfo);
     }
-
-    const handleLocation = () => {
-        const getLocation = (position) => {
-            const newFoodInfo = { ...foodInfo }
-            newFoodInfo.location = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-            setFoodInfo(newFoodInfo);
-        }
-        const handleError = (err) => {
-            console.log(err)
-        }
+    const handleError = (err) => {
+        toast.error(err)
+    }
+    const accessLocation = () => {
+        console.log('Clicked access location')
         navigator.geolocation.getCurrentPosition(getLocation, handleError);
     }
 
-    const handleUpdateProfileInfo = () => {
-
-    }
-
     return (
-        <MainLayout>
-            <Grid container direction='column' sx={{ p: '32px' }}>
-                <Grid item>
-                    <Typography variant='subtitle1' sx={{ border: '1px solid #ddd', borderBottom: 'none', p: '16px' }}>
-                        Basic Info
-                    </Typography>
-                    <Stack rowGap='16px' sx={{ border: '1px solid #ddd', p: '16px' }}>
-                        <Grid container>
-                            <Grid item md='1'>
-                                <Typography variant='subtitle'>Name</Typography>
-                            </Grid>
-                            <Grid md='11'>
-                                <TextField
-                                    fullWidth size='small'
-                                    variant="outlined"
-                                    name='name'
-                                    value={foodInfo?.name}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
+        <Grid
+            container
+            direction='column'
+            component='form'
+            onSubmit={handleSubmit}
+            sx={{ p: '32px' }}>
+            <Grid item>
+                <Typography
+                    variant='subtitle1'
+                    sx={{
+                        border: '1px solid #ddd',
+                        borderBottom: 'none',
+                        p: '16px'
+                    }}>
+                    Food Info
+                </Typography>
+                <Stack rowGap='16px' sx={{ border: '1px solid #ddd', p: '16px' }}>
+                    <Grid container>
+                        <Grid item md='1'>
+                            <Typography variant='subtitle'>Area </Typography>
                         </Grid>
-                        <Grid container direction='row' alignItems='center' spacing={4}>
-                            <Grid item md='1'>
-                                <Typography variant='subtitle'>Phone</Typography>
-                            </Grid>
+                        <Grid item md='11'>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                size='small'
+                                variant="outlined"
+                                onChange={handleInputChange}
+                                name='area'
+                                value={area}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md='1'>
+                            <Typography variant='subtitle'>Address </Typography>
+                        </Grid>
+                        <Grid item md='11'>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                size='small'
+                                variant="outlined"
+                                onChange={handleInputChange}
+                                name='address'
+                                value={address}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md='1'>
+
+                        </Grid>
+                        <Grid item md='11'>
+                            <Button
+                                onClick={accessLocation}
+                                variant='contained'
+                                type="button"
+                            >
+                                Acces Location
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md='1'>
+                            <Typography variant='subtitle'>Latitude </Typography>
+                        </Grid>
+                        <Grid md='11'>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                size='small'
+                                name='lat'
+                                variant="outlined"
+                                inputProps={
+                                    { readOnly: true, }
+                                }
+                                onChange={handleInputChange}
+                                value={location.lat}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container direction='row' alignItems='center' spacing={4}>
+                        <Grid item md='1'>
+                            <Typography variant='subtitle'>Longitude</Typography>
+                        </Grid>
+                        <Grid item md='11'>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                size='small'
+                                name='lng'
+                                variant="outlined"
+                                inputProps={
+                                    { readOnly: true, }
+                                }
+                                value={location.lng}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container direction='row' alignItems='center' spacing={4}>
+                        <Grid item md='1'>
+                            <Typography variant='subtitle'>Food Name</Typography>
+                        </Grid>
+                        <Grid item md='11'>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                size='small'
+                                variant="outlined"
+                                name='foodName'
+                                value={foodName}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container direction='row' alignItems='center' spacing={4}>
+                        <Grid item md='1'>
+                            <Typography variant='subtitle'>Full food Description</Typography>
+                        </Grid>
+                        <Grid item md='11'>
+                            <TextField
+                                fullWidth
+                                id="outlined-basic"
+                                size='small'
+                                variant="outlined"
+                                name='description'
+                                value={description}
+                                onChange={handleInputChange}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item md='1'>
+
+                        </Grid>
+                        <Grid item>
                             <Grid item md='11'>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    size='small'
-                                    variant="outlined"
-                                    name='phone'
-                                    value={foodInfo?.phone}
-                                    onChange={handleInputChange} />
+                                {
+                                    isLoading
+                                        ? <CircularProgress />
+                                        : <Button
+                                            variant='contained'
+                                            size='large'
+                                            type="submit"
+                                        >
+                                            Submit
+                                        </Button>
+                                }
                             </Grid>
                         </Grid>
-                    </Stack>
-                </Grid>
-                <Grid item>
-                    <Typography
-                        variant='subtitle1'
-                        sx={{
-                            border: '1px solid #ddd',
-                            borderBottom: 'none',
-                            p: '16px'
-                        }}>
-                        Food Info
-                    </Typography>
-                    <Stack rowGap='16px' sx={{ border: '1px solid #ddd', p: '16px' }}>
-                        <Grid container>
-                            <Grid item md='1'>
-                                <Typography variant='subtitle'>Address </Typography>
-                            </Grid>
-                            <Grid md='11'>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    size='small'
-                                    variant="outlined"
-                                    onChange={handleInputChange}
-                                    name='address'
-                                    value={foodInfo?.address}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid container>
-                            <Grid item md='1'>
+                    </Grid>
 
-                            </Grid>
-                            <Grid item md='11'>
-                                <Button
-                                    onClick={handleLocation}
-                                    variant='contained'
-                                >
-                                    Acces Location
-                                </Button>
-                            </Grid>
-                        </Grid>
-                        <Grid container>
-                            <Grid item md='1'>
-                                <Typography variant='subtitle'>Latitude </Typography>
-                            </Grid>
-                            <Grid md='11'>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    size='small'
-                                    name='lat'
-                                    variant="outlined"
-                                    onChange={handleLocationInputChange}
-                                    value={foodInfo?.location?.lat}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid container direction='row' alignItems='center' spacing={4}>
-                            <Grid item md='1'>
-                                <Typography variant='subtitle'>Longitude</Typography>
-                            </Grid>
-                            <Grid item md='11'>
-                                <TextField
-
-                                    fullWidth
-                                    id="outlined-basic"
-                                    size='small'
-                                    name='lng'
-                                    variant="outlined"
-                                    onChange={handleLocationInputChange}
-                                    value={foodInfo?.location?.lng}
-                                />
-                            </Grid>
-                        </Grid>
-                        <Grid container direction='row' alignItems='center' spacing={4}>
-                            <Grid item md='1'>
-                                <Typography variant='subtitle'>Full food Description</Typography>
-                            </Grid>
-                            <Grid item md='11'>
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    size='small'
-                                    variant="outlined"
-                                    name='description'
-                                    value={foodInfo?.description}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-
-                        </Grid>
-                        <Grid container>
-                            <Grid item md='1'> 
-
-                            </Grid>
-                            <Grid item>
-                                <Grid item md='11'>
-                                    <Button
-                                        onClick={handleUpdateProfileInfo}
-                                        variant='contained'
-                                        size='large'
-                                    >
-                                        Submit
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                    </Stack>
-                </Grid>
+                </Stack>
             </Grid>
-        </MainLayout>
+        </Grid>
     )
 }
 
