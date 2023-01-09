@@ -35,14 +35,14 @@ function RequestListScreen() {
 
   const handleContactView = (request) => {
     const info = {
-        name: request.donor.name,
-        email: request.donor.email,
-        phone: request.donor.phone,
-        address: request.donor.address,
+      name: request.donor.name,
+      email: request.donor.email,
+      phone: request.donor.phone,
+      address: request.donor.address,
     }
     setContactInfo(info)
     handleOpen()
-}
+  }
 
   return (
     <Grid container spacing={4} sx={{ p: '0 32px' }}>
@@ -54,17 +54,22 @@ function RequestListScreen() {
                 <Typography variant='h6'>
                   Donated by Mr. {request?.donor?.name}
                 </Typography>
-                <Stack direction='row' alignItems='center'>
+                <Stack direction='row' alignItems='center' spacing={0.5}>
+                  <LunchDiningIcon sx={{ fontSize: '16px' }} />
                   <Typography variant='subtitle1' sx={{ mr: '4px' }}>
                     {request?.food?.foodName}
                   </Typography>
-                  <LunchDiningIcon sx={{ fontSize: '16px' }} />
                 </Stack>
-                <Stack direction='row' alignItems='center'>
+                <Stack
+                  direction='row'
+                  alignItems='center'
+                  spacing={0.5}
+                >
+                  <PlaceIcon sx={{ fontSize: '16px' }} />
                   <Typography variant='subtitle2'>
                     {request?.food?.area}
                   </Typography>
-                  <PlaceIcon sx={{ fontSize: '16px' }} />
+
                 </Stack>
                 <Typography
                   variant='body2'

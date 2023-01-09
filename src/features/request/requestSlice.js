@@ -10,6 +10,7 @@ const initialState = {
     error: ''
 }
 
+//Make request
 export const makeRequest = createAsyncThunk(
     'request/makeRequest',
     async (requestData, thunkApi) => {
@@ -68,7 +69,7 @@ export const getRequestByVolunteer = createAsyncThunk(
     }
 )
 
-export const foodSlice = createSlice({
+export const requestSlice = createSlice({
     name: 'food',
     initialState,
     reducers: {
@@ -132,4 +133,4 @@ export const foodSlice = createSlice({
     }
 })
 
-export default foodSlice.reducer
+export default requestSlice.reducer
