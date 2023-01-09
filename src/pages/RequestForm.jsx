@@ -19,6 +19,9 @@ function RequestForm() {
         .then(()=>{
             toast.success('Request sent!')
         })
+        .catch((error)=>{
+            toast.error(error)
+        })
         e.preventDefault()
     }
     return (

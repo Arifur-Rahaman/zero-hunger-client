@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import Loader from '../components/Loader';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useLocation from '../hooks/useLocation';
-import { Modal, Typography } from '@mui/material';
+import { Button, Modal, Paper, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
+import { setSelectedFood } from '../features/foods/foodSlice';
 
 const style = {
     position: 'absolute',
@@ -15,7 +17,6 @@ const style = {
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
-    p: 4,
 };
 
 const containerStyle = {
@@ -24,21 +25,31 @@ const containerStyle = {
 };
 
 const Map = () => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const location = useLocation()
+    const [open, setOpen] = React.useState(false);
+    const [clickedFood, setClickedFood] = useState({})
+
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY
     })
     const { foods } = useSelector(state => state.food)
 
-    const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const onLoad = marker => {
         //console.log('marker: ', marker)
     }
-    const handleMarkerClick = (food) => {
+    const handlefoodClick = (food) => {
+        setClickedFood(food)
         handleOpen(true)
+    }
+
+    const handleMakeRequest = (food) => {
+        dispatch(setSelectedFood(food))
+        navigate(`/foods/${food._id}`)
     }
 
     if (!location?.loaded || !isLoaded) {
@@ -59,11 +70,11 @@ const Map = () => {
                     foods?.map(food => {
                         const position = food.location
                         return (
-                            position && <MarkerF
+                            food?.status==='available' && position && <MarkerF
                                 key={food._id}
                                 onLoad={onLoad}
                                 position={position}
-                                onClick={() => handleMarkerClick(food)}
+                                onClick={() => handlefoodClick(food)}
                             />
                         )
                     })
@@ -76,12 +87,19 @@ const Map = () => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Text in a modal
-                    </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                    </Typography>
+                    <Paper sx={{ padding: '20px' }}>
+                        <Typography variant='subtitle1'>{clickedFood?.foodName}</Typography>
+                        <Typography variant='subtitle1'>{clickedFood?.description}</Typography>
+                        <Typography variant='subtitle1'>{clickedFood?.area}</Typography>
+                        <Typography variant='subtitle1'>{clickedFood?.address}</Typography>
+                        <Button
+                            sx={{ mt: '8px' }}
+                            variant='contained'
+                            onClick={() => handleMakeRequest(clickedFood)}
+                        >
+                            Make Request
+                        </Button>
+                    </Paper>
                 </Box>
             </Modal>
         </div>

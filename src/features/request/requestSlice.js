@@ -2,7 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { requestService } from "./requestService";
 
 const initialState = {
-    requests:[],
+    requests: [],
+    volunteerRequests: [],
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -22,7 +23,22 @@ export const makeRequest = createAsyncThunk(
         }
     }
 )
+//Confirm request
+export const confirmRequest = createAsyncThunk(
+    'request/confirmRequest',
+    async (requestData, thunkApi) => {
+        const token = thunkApi.getState().auth.user.token
+        try {
+            return await requestService.confirmRequest(requestData, token)
+        } catch (error) {
+            const message = (error.response && error.response.data && error.response.data.message) ||
+                error.message || error.toString()
+            return thunkApi.rejectWithValue(message)
+        }
+    }
+)
 
+//Get request for Donor by food id
 export const getRequest = createAsyncThunk(
     'request/getRequest',
     async (foodId, thunkApi) => {
@@ -37,13 +53,28 @@ export const getRequest = createAsyncThunk(
     }
 )
 
+//Get requests by volunteer
+export const getRequestByVolunteer = createAsyncThunk(
+    'request/getRequestByVolunteer',
+    async (_, thunkApi) => {
+        const token = thunkApi.getState().auth.user.token
+        try {
+            return await requestService.getRequestByVolunteer(token)
+        } catch (error) {
+            const message = (error.response && error.response.data && error.response.data.message) ||
+                error.message || error.toString()
+            return thunkApi.rejectWithValue(message)
+        }
+    }
+)
+
 export const foodSlice = createSlice({
     name: 'food',
     initialState,
-    reducers:{
-        
+    reducers: {
+
     },
-    extraReducers: (builder)=>{
+    extraReducers: (builder) => {
         builder
             .addCase(getRequest.pending, (state) => {
                 state.isLoading = true
@@ -58,15 +89,42 @@ export const foodSlice = createSlice({
                 state.isError = true
                 state.error = payload
             })
+            .addCase(getRequestByVolunteer.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getRequestByVolunteer.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.volunteerRequests = action.payload
+            })
+            .addCase(getRequestByVolunteer.rejected, (state, { payload }) => {
+                state.isLoading = false
+                state.isError = true
+                state.error = payload
+            })
             .addCase(makeRequest.pending, (state) => {
                 state.isLoading = true
             })
             .addCase(makeRequest.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.error=''
+                state.error = ''
             })
             .addCase(makeRequest.rejected, (state, { payload }) => {
+                state.isLoading = false
+                state.isError = true
+                state.error = payload
+            })
+
+            .addCase(confirmRequest.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(confirmRequest.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.requests = action.payload
+            })
+            .addCase(confirmRequest.rejected, (state, { payload }) => {
                 state.isLoading = false
                 state.isError = true
                 state.error = payload
