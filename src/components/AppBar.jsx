@@ -6,14 +6,18 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import Menu from './Menu';
 import { signout } from '../features/auth/authSlice';
+import {useLocation} from 'react-router-dom';
+
+
 export default function AppBar() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.auth)
+    const location = useLocation()
     const handleSignin=()=>{
         navigate('/signin')
     }
-
+    console.log(location)
     const userItems = [
         {
             item: 'Profile',
@@ -37,8 +41,8 @@ export default function AppBar() {
         }
     ]
     return (
-        <Box sx={{ flexGrow: 1, mb:'32px' }}>
-            <MuiAppBar position="static" color='secondary'>
+        <Box sx={{mb:`${location.pathname ==='/'? null : '32px'}`}}>
+            <MuiAppBar position="fixed" color='secondary'>
                 <Toolbar>
                     <IconButton
                         size="large"

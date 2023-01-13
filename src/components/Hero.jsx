@@ -1,13 +1,14 @@
 import React from 'react'
 import { Button, Grid, Typography } from '@mui/material'
-import hero_image from '../assets/Hero_image1.jpg'
+import hero_image from '../assets/donation_box.jpg'
 import { Stack } from '@mui/system'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
+import AppBar from './AppBar';
 function Hero() {
     const navigate = useNavigate()
     return (
-        <Grid container sx={{ background: '#F3EFEF' }}>
+        <Grid container sx={{ background: '#F3EFEF'}}>
             <Grid item md={6} sx={{ background: '#F3EFEF' }}>
                 <Stack justifyContent='center' alignItems='center' sx={{ height: '100%' }}>
                     <Typography
@@ -23,14 +24,14 @@ function Hero() {
                     <Button
                         variant='contained'
                         endIcon={<ArrowForwardIcon />}
-                        onClick={()=>navigate('/donate')}
+                        onClick={() => navigate('/donate')}
                     >
                         Donate your Food
                     </Button>
                 </Stack>
             </Grid>
             <Grid item md={6}>
-                <img style={{ width: '100%' }} src={hero_image} alt='Food donation' />
+                <img style={{ width: '100%', height: '100%' }} src={hero_image} alt='Food donation' />
             </Grid>
         </Grid>
     )

@@ -2,14 +2,14 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom'
 import HomeScreen from './pages/HomeScreen';
 import AvailableFoodScreen from './pages/AvailableFoodScreen';
-import FoodDonationScreen from './pages/FoodDonationScreen';
+import DonationFormScreen from './pages/DonationFormScreen';
 import SigninScreen from './pages/SigninScreen';
 import MainLayout from './layouts/MainLayout';
 import RegisterScreen from './pages/RegisterScreen';
 import PrivateRoute from './components/PrivateRoute';
 
 import { ToastContainer} from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 import DonationListScreen from './pages/DonationListScreen';
 import RequestScreen from './pages/RequestScreen';
 import RequestForm from './pages/RequestForm';
@@ -28,7 +28,7 @@ function App() {
           <Route path='/foods' element={<AvailableFoodScreen />} />
         </Route>
         <Route path="/donate" element={<PrivateRoute />}>
-          <Route path='/donate' element={<FoodDonationScreen />} />
+          <Route path='/donate' element={<DonationFormScreen />} />
         </Route>
         <Route path="/donations" element={<PrivateRoute />}>
           <Route path='/donations' element={<DonationListScreen />} />
