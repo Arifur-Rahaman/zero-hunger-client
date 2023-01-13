@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, TextField, Typography } from '@mui/material'
+import { Button, CircularProgress, Grid, TextField, Typography, useTheme } from '@mui/material'
 import { Container } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,6 +15,7 @@ function RequestForm() {
     const { donor, _id } = selectedFood
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const theme = useTheme()
     const handleInputChange = (e) => {
         setMotivation(e.target.value)
     }
@@ -37,6 +38,7 @@ function RequestForm() {
     }
     return (
         <Container>
+            
             <Grid
                 container
                 sx={{ p: '0 32px' }}
@@ -46,7 +48,7 @@ function RequestForm() {
                 direction='column'
             >
                 <Grid item>
-                    <Typography variant='h6'>
+                    <Typography variant='h5' sx={{color: `${theme.palette.primary.main}`}}>
                         Food {selectedFood._id}
                     </Typography>
                 </Grid>

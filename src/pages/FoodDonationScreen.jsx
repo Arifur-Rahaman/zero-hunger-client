@@ -1,9 +1,21 @@
-import { Typography, Stack, Grid, TextField, Button, CircularProgress } from '@mui/material'
+import {
+    Typography,
+    Grid,
+    TextField,
+    Button,
+    CircularProgress,
+    Container,
+    Paper
+} from '@mui/material'
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { createFood } from '../features/foods/foodSlice'
+
+import donation_image from '../assets/donation_box.jpg'
+
 function FoodDonationScreen() {
     const { isLoading } = useSelector(state => state.food)
     const navigate = useNavigate()
@@ -42,7 +54,7 @@ function FoodDonationScreen() {
                     },
                 })
                 navigate('/donations')
-                
+
             })
         e.preventDefault()
     }
@@ -65,162 +77,145 @@ function FoodDonationScreen() {
     }
 
     return (
-        <Grid
-            container
-            direction='column'
-            component='form'
-            onSubmit={handleSubmit}
-            sx={{ p: '32px' }}>
-            <Grid item>
-                <Typography
-                    variant='subtitle1'
-                    sx={{
-                        border: '1px solid #ddd',
-                        borderBottom: 'none',
-                        p: '16px'
-                    }}>
-                    Food Info
-                </Typography>
-                <Stack rowGap='16px' sx={{ border: '1px solid #ddd', p: '16px' }}>
-                    <Grid container>
-                        <Grid item md='1'>
-                            <Typography variant='subtitle'>Area </Typography>
-                        </Grid>
-                        <Grid item md='11'>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                size='small'
-                                variant="outlined"
-                                onChange={handleInputChange}
-                                name='area'
-                                value={area}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item md='1'>
-                            <Typography variant='subtitle'>Address </Typography>
-                        </Grid>
-                        <Grid item md='11'>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                size='small'
-                                variant="outlined"
-                                onChange={handleInputChange}
-                                name='address'
-                                value={address}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item md='1'>
-
-                        </Grid>
-                        <Grid item md='11'>
-                            <Button
-                                onClick={accessLocation}
-                                variant='contained'
-                                type="button"
-                            >
-                                Acces Location
-                            </Button>
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item md='1'>
-                            <Typography variant='subtitle'>Latitude </Typography>
-                        </Grid>
-                        <Grid md='11'>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                size='small'
-                                name='lat'
-                                variant="outlined"
-                                inputProps={
-                                    { readOnly: true, }
-                                }
-                                onChange={handleInputChange}
-                                value={location.lat}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container direction='row' alignItems='center' spacing={4}>
-                        <Grid item md='1'>
-                            <Typography variant='subtitle'>Longitude</Typography>
-                        </Grid>
-                        <Grid item md='11'>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                size='small'
-                                name='lng'
-                                variant="outlined"
-                                inputProps={
-                                    { readOnly: true, }
-                                }
-                                value={location.lng}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container direction='row' alignItems='center' spacing={4}>
-                        <Grid item md='1'>
-                            <Typography variant='subtitle'>Food Name</Typography>
-                        </Grid>
-                        <Grid item md='11'>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                size='small'
-                                variant="outlined"
-                                name='foodName'
-                                value={foodName}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container direction='row' alignItems='center' spacing={4}>
-                        <Grid item md='1'>
-                            <Typography variant='subtitle'>Full food Description</Typography>
-                        </Grid>
-                        <Grid item md='11'>
-                            <TextField
-                                fullWidth
-                                id="outlined-basic"
-                                size='small'
-                                variant="outlined"
-                                name='description'
-                                value={description}
-                                onChange={handleInputChange}
-                            />
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item md='1'>
-
-                        </Grid>
-                        <Grid item>
-                            <Grid item md='11'>
-                                {
-                                    isLoading
-                                        ? <CircularProgress />
-                                        : <Button
-                                            variant='contained'
-                                            size='large'
-                                            type="submit"
-                                        >
-                                            Submit
-                                        </Button>
-                                }
+        <Container sx={{mb: '32px'}}>
+            <Grid container direction='column'>
+                <Grid item container justifyContent='center'>
+                    <img
+                        src={donation_image}
+                        alt='donation_pic'
+                        style={{height:'200px'}}
+                    />
+                </Grid>
+                <Grid
+                    item
+                >
+                    <Paper sx={{ p: '32px' }}>
+                        <Grid
+                            container
+                            direction='column'
+                            rowGap={'2rem'}
+                            component='form'
+                            onSubmit={handleSubmit}
+                            sx={{width:'100%'}}
+                        >
+                            <Grid item sx={{mb: '32px'}}>
+                                <Typography
+                                    variant='h4'
+                                    align='center'
+                                    sx={{
+                                        borderBottom: '1px solid lightGray',
+                                        pb: '2rem',
+                                    }}>
+                                    Food Donation
+                                </Typography>
+                            </Grid>
+                            <Grid item >
+                                <Button
+                                    onClick={accessLocation}
+                                    variant='contained'
+                                    type="button"
+                                    endIcon={<LocationOnIcon/>}
+                                >
+                                    Acces Location
+                                </Button>
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"                                  
+                                    variant="outlined"
+                                    label='Enter donation area'
+                                    placeholder='Donation area'
+                                    onChange={handleInputChange}
+                                    name='area'
+                                    value={area}
+                                />
+                            </Grid>
+                            <Grid item >
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    label='Enter donation address'
+                                    placeholder='Donation address'
+                                    onChange={handleInputChange}
+                                    name='address'
+                                    value={address}
+                                />
+                            </Grid>
+                            
+                            <Grid item>
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    name='lat'
+                                    label='Click access location button to fill this field by latitude value of your location'
+                                    variant="outlined"
+                                    inputProps={
+                                        { readOnly: true, }
+                                    }
+                                    onChange={handleInputChange}
+                                    value={location.lat}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    name='lng'
+                                    variant="outlined"
+                                    label="Click access location button to fill this field by longitude value of your location"
+                                    inputProps={
+                                        { readOnly: true, }
+                                    }
+                                    value={location.lng}
+                                />
+                            </Grid>
+                            <Grid item >
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    label='Enter food name'
+                                    placeholder='Enter food name'
+                                    name='foodName'
+                                    value={foodName}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    label='Enter food description'
+                                    name='description'
+                                    value={description}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                            <Grid item>
+                                <Grid item >
+                                    {
+                                        isLoading
+                                            ? <CircularProgress />
+                                            : <Button
+                                                variant='contained'
+                                                size='large'
+                                                type="submit"
+                                            >
+                                                Submit
+                                            </Button>
+                                    }
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-
-                </Stack>
+                    </Paper>
+                </Grid>
             </Grid>
-        </Grid>
+        </Container>
     )
 }
 
