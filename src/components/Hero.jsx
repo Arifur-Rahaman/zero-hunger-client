@@ -4,7 +4,6 @@ import hero_image from '../assets/donation_box.jpg'
 import { Stack } from '@mui/system'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { useNavigate } from 'react-router-dom';
-import AppBar from './AppBar';
 function Hero() {
     const navigate = useNavigate()
     return (

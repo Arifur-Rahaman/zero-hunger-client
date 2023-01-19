@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom'
 import { getFoods, setSelectedFood } from '../features/foods/foodSlice'
 import SendIcon from '@mui/icons-material/Send';
 import Loader from './Loader'
+import { Stack } from '@mui/system'
 
 function Foods() {
     const { foods, isLoading } = useSelector(state => state.food)
+    const {user} = useSelector(state=>state.auth)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     useEffect(() => {
@@ -24,29 +26,37 @@ function Foods() {
     }
 
     return (
-        <Grid container spacing={4} sx={{ p: '0 32px' }}>
+        <Grid container spacing={4} sx={{ p: '0 32px', mb: '20px' }}>
             {
                 foods.map(food => {
                     if (food.status === 'available') {
                         return (
                             <Grid item md={3} key={food._id}>
-                                <Paper sx={{ padding: '20px' }}>
-                                    <Typography variant='subtitle1'>{food.foodName}</Typography>
-                                    <Typography variant='subtitle1'>{food.description}</Typography>
-                                    <Typography variant='subtitle1'>{food.area}</Typography>
-                                    <Typography variant='subtitle1'>{food.address}</Typography>
-                                    <Button
-                                        sx={{ mt: '8px' }}
-                                        variant='contained'
-                                        onClick={() => handleClick(food)}
-                                        endIcon={<SendIcon/>}
-                                    >
-                                        Make Request
-                                    </Button>
+                                <Paper>
+                                    <img
+                                        src={food.imageURL}
+                                        alt='food'
+                                        style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+                                    />
+                                    <Stack sx={{p:'16px 8px'}}>
+                                        <Typography variant='h6'>{food.foodName}</Typography>
+                                        <Typography variant='subtitle1'>{food.description}</Typography>
+                                        <Typography variant='subtitle1'>{food.area}</Typography>
+                                        <Typography variant='subtitle1'>{food.address}</Typography>
+                                        <Button
+                                            sx={{ mt: '8px' }}
+                                            variant='contained'
+                                            onClick={() => handleClick(food)}
+                                            endIcon={food.donor === user._id?null:<SendIcon />}
+                                            disabled={food.donor === user._id}
+                                        >
+                                            {food.donor === user._id?"Your Donated Food":'Make Request'}
+                                        </Button>
+                                    </Stack>
                                 </Paper>
                             </Grid>
                         )
-                    } else{
+                    } else {
                         return null
                     }
                 })

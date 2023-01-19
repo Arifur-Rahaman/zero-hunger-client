@@ -2,7 +2,7 @@ import './App.css';
 import { Routes, Route } from 'react-router-dom'
 import HomeScreen from './pages/HomeScreen';
 import AvailableFoodScreen from './pages/AvailableFoodScreen';
-import DonationFormScreen from './pages/DonationFormScreen';
+import FoodDonateScreen from './pages/FoodDonateScreen';
 import SigninScreen from './pages/SigninScreen';
 import MainLayout from './layouts/MainLayout';
 import RegisterScreen from './pages/RegisterScreen';
@@ -14,6 +14,7 @@ import DonationListScreen from './pages/DonationListScreen';
 import RequestScreen from './pages/RequestScreen';
 import RequestForm from './pages/RequestForm';
 import RequestListScreen from './pages/RequestListScreen';
+import FoodEditScreen from './pages/FoodEditScreen';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
           <Route path='/foods' element={<AvailableFoodScreen />} />
         </Route>
         <Route path="/donate" element={<PrivateRoute />}>
-          <Route path='/donate' element={<DonationFormScreen />} />
+          <Route path='/donate' element={<FoodDonateScreen/>} />
         </Route>
         <Route path="/donations" element={<PrivateRoute />}>
           <Route path='/donations' element={<DonationListScreen />} />
@@ -42,7 +43,9 @@ function App() {
         <Route path="/foods/:foodId" element={<PrivateRoute />}>
           <Route path='/foods/:foodId' element={<RequestForm />} />
         </Route>
-
+        <Route path="/editFood/:foodId" element={<PrivateRoute />}>
+          <Route path='/editFood/:foodId' element={<FoodEditScreen />} />
+        </Route>
       </Routes>
       <ToastContainer/>
     </MainLayout>

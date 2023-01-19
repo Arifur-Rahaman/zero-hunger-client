@@ -3,7 +3,7 @@ import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import Loader from '../components/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import useLocation from '../hooks/useLocation';
-import { Button, Modal, Paper, Typography } from '@mui/material';
+import { Button, Modal, Paper, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedFood } from '../features/foods/foodSlice';
@@ -30,6 +30,7 @@ const Map = () => {
     const location = useLocation()
     const [open, setOpen] = React.useState(false);
     const [clickedFood, setClickedFood] = useState({})
+    const {user} = useSelector(state=>state.auth)
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY
@@ -70,7 +71,7 @@ const Map = () => {
                     foods?.map(food => {
                         const position = food.location
                         return (
-                            food?.status==='available' && position && <MarkerF
+                            food?.status === 'available' && position && <MarkerF
                                 key={food._id}
                                 onLoad={onLoad}
                                 position={position}
@@ -87,18 +88,28 @@ const Map = () => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Paper sx={{ padding: '20px' }}>
-                        <Typography variant='subtitle1'>{clickedFood?.foodName}</Typography>
-                        <Typography variant='subtitle1'>{clickedFood?.description}</Typography>
-                        <Typography variant='subtitle1'>{clickedFood?.area}</Typography>
-                        <Typography variant='subtitle1'>{clickedFood?.address}</Typography>
-                        <Button
-                            sx={{ mt: '8px' }}
-                            variant='contained'
-                            onClick={() => handleMakeRequest(clickedFood)}
-                        >
-                            Make Request
-                        </Button>
+                    <Paper>
+                        <img
+                            src={clickedFood.imageURL}
+                            alt='food'
+                            style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+                        />
+                        <Stack sx={{p:'8px 16px'}}>
+                            <Typography variant='h6'>{clickedFood?.foodName}</Typography>
+                            <Typography variant='subtitle1'>{clickedFood?.description}</Typography>
+                            <Typography variant='subtitle1'>{clickedFood?.area}</Typography>
+                            <Typography variant='subtitle1'>{clickedFood?.address}</Typography>
+                            <Button
+                                sx={{ mt: '8px' }}
+                                variant='contained'
+                                onClick={() => handleMakeRequest(clickedFood)}
+                                disabled={clickedFood.donor === user._id}
+
+
+                            >
+                               {clickedFood.donor === user._id?"Your Donated Food":'Make Request'}
+                            </Button>
+                        </Stack>
                     </Paper>
                 </Box>
             </Modal>

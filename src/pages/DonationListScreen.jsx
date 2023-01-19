@@ -1,10 +1,15 @@
-import { Grid, Typography, Paper, Button, Stack} from '@mui/material'
+import { Grid, Typography, Paper, Button, Stack, IconButton } from '@mui/material'
+import { Box } from '@mui/system'
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Badge from '../components/Badge'
 import Loader from '../components/Loader'
-import { getUserFoods } from '../features/foods/foodSlice'
+import { deleteFoodById, getUserFoods } from '../features/foods/foodSlice'
+import { toast } from 'react-toastify';
 
 function DonationListScreen() {
     const dispatch = useDispatch()
@@ -16,6 +21,18 @@ function DonationListScreen() {
 
     const handleClick = (foodId) => {
         navigate(`/request/${foodId}`)
+    }
+    const handleDelete = (food) => {
+        if (window.confirm("Do you really want to Delete?")) {
+            dispatch(deleteFoodById(food._id))
+                .unwrap()
+                .then(() => {
+                    toast.success('Deleted successfully')
+                })
+                .catch((error) => {
+                    toast.error('Something wrong')
+                })
+        }
     }
 
     if (isLoading) {
@@ -33,29 +50,59 @@ function DonationListScreen() {
                     {
                         userFoods.map(food => (
                             <Grid item md={3} key={food._id}>
-                                <Paper sx={{
-                                    padding: '20px',
-                                }}
+                                <Paper
                                 >
-                                    <Stack alignItems='flex-start' gap='4px'>
-                                        <Typography variant='h6'>{food.foodName}</Typography>
+                                    <img
+                                        src={food.imageURL}
+                                        alt='food'
+                                        style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+                                    />
+                                    <Stack gap='4px' sx={{ p: '16px' }}>
+                                        <Stack
+                                            direction='row'
+                                            justifyContent='space-between'
+                                            alignItems='center'
+                                        >
+                                            <Typography variant='h6'>{food.foodName}</Typography>
+                                            <Typography variant='body2' sx={{ mb: '4px' }}>
+                                                <Badge
+                                                    bg={food.status === 'booked' ? 'primary' : 'warning'}
+                                                >
+                                                    {food.status}
+                                                </Badge>
+                                            </Typography>
+                                        </Stack>
                                         <Typography variant='body1'>{food.description}</Typography>
                                         <Typography variant='body2'>{food.area}</Typography>
                                         <Typography variant='subtitle2'>{food.address}</Typography>
-                                        <Typography variant='body2' sx={{ mb: '4px' }}>
-                                            <Badge
-                                                bg= {food.status==='booked'? 'primary': 'warning'}
+
+                                        <Stack direction='row' justifyContent='space-between' sx={{ mt: '8px' }}>
+                                            <Button
+                                                variant='contained'
+                                                size="small"
+                                                onClick={() => handleClick(food._id)}
+                                                endIcon={<VisibilityIcon fontSize='large' />}
                                             >
-                                                {food.status}
-                                            </Badge>
-                                        </Typography>
-                                        <Button
-                                            sx={{ mt: '8px' }}
-                                            variant='contained'
-                                            onClick={() => handleClick(food._id)}
-                                        >
-                                            View Request
-                                        </Button>
+                                                Requests
+                                            </Button>
+                                            <Box>
+                                                <IconButton
+                                                    variant='contained'
+                                                    color='primary'
+                                                    onClick={() => navigate(`/editFood/${food._id}`)}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDelete(food)}
+                                                    variant='contained'
+                                                    color='error'
+                                                    disabled={food.status === 'booked'}
+                                                    >
+                                                    <DeleteIcon size="large" />
+                                                </IconButton>
+                                            </Box>
+                                        </Stack>
                                     </Stack>
                                 </Paper>
                             </Grid>

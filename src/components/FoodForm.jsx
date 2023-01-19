@@ -8,70 +8,120 @@ import {
     Paper
 } from '@mui/material'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { createFood } from '../features/foods/foodSlice'
+import { createFood, updateFoodById } from '../features/foods/foodSlice'
 
 import donation_image from '../assets/donation_box.jpg'
+import axios from 'axios';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
-function DonationFormScreen() {
+function FoodForm({ data }) {
     const { isLoading } = useSelector(state => state.food)
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const { foodId } = useParams()
     const [sameLocation, setSameLocation] = useState(true)
     const [showWarning, setShowWarning] = useState(true)
     const [manualLocation, setManualLocation] = useState('')
+    const [isUploading, setIsUploading] = useState(false)
+    const [fileData, setFileData] = useState(null)
+
     const [foodInfo, setFoodInfo] = useState({
         address: '',
         description: '',
         foodName: '',
+        imageURL: '',
         area: '',
+        quantity: '1',
         location: {
             lat: '',
             lng: '',
         },
     })
-    const { address, location, description, area, foodName } = foodInfo
+    useEffect(() => {
+        if (data) {
+            setFoodInfo(data)
+            setManualLocation(`${data.location.lat}, ${data.location.lng}`)
+        }
+    }, [data])
+    const { address, location, description, area, foodName, quantity, imageURL } = foodInfo
 
     const handleInputChange = (e) => {
         const newFoodInfo = { ...foodInfo }
-            newFoodInfo[e.target.name] = e.target.value;
-            setFoodInfo(newFoodInfo);
+        newFoodInfo[e.target.name] = e.target.value;
+        setFoodInfo(newFoodInfo);
     }
 
-    const handleManualLocationChange = (e)=>{
+    const handleManualLocationChange = (e) => {
         setManualLocation(e.target.value)
     }
 
+    const handleUpload = async () => {
+        const URL = process.env.REACT_APP_API_URL
+        const token = JSON.parse(localStorage.getItem('user')).token
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                authorization: `Bearer ${token}`,
+            }
+        }
+        setIsUploading(true)
+        try {
+            const { data } = await axios.post(`${URL}/api/upload`, fileData, config)
+            setIsUploading(false)
+            setFoodInfo((pre) => ({
+                ...pre, imageURL: data.secure_url
+            }))
+            toast.success('Uploaded!')
+        } catch (error) {
+            setIsUploading(false)
+            toast.error(getErrorMessage(error))
+        }
+    }
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        const bodyFormData = new FormData();
+        bodyFormData.append('file', file);
+        setFileData(bodyFormData)
+    }
+
     const handleSubmit = (e) => {
-        const newFoodInfo = {...foodInfo}
-        if(!sameLocation){
+        e.preventDefault()
+        let newFoodInfo = { ...foodInfo, location:{...foodInfo.location}}
+        if (!sameLocation) {
             const lat_lng = manualLocation.split(',')
             const lat = +lat_lng[0]
             const lng = +lat_lng[1]
             newFoodInfo.location.lat = lat
             newFoodInfo.location.lng = lng
         }
-        dispatch(createFood(newFoodInfo))
-            .unwrap()
-            .then(() => {
-                toast.success('Food added')
-                setFoodInfo({
-                    address: '',
-                    description: '',
-                    foodName: '',
-                    area: '',
-                    location: {
-                        lat: '',
-                        lng: '',
-                    },
-                })
-                navigate('/donations')
+        if (foodId) {
+            dispatch(updateFoodById(newFoodInfo))
+                .unwrap()
+                .then(() => {
+                    toast.success('Food Updated')
+                    navigate('/donations')
 
-            })
-        e.preventDefault()
+                })
+                .catch((error) => {
+                    toast.error(error)
+                })
+        } else {
+            dispatch(createFood(newFoodInfo))
+                .unwrap()
+                .then(() => {
+                    toast.success('Food added')
+                    navigate('/donations')
+
+                })
+                .catch((error) => {
+                    toast.error(error)
+                })
+        }
     }
 
     //Access Location from user
@@ -92,23 +142,23 @@ function DonationFormScreen() {
     }
 
     return (
-        <Container sx={{ mb: '32px' }}>
+        <Container maxWidth='md' sx={{ mb: '32px' }}>
             <Grid container direction='column'>
                 <Grid item container justifyContent='center'>
                     <img
                         src={donation_image}
                         alt='donation_pic'
-                        style={{ height: '200px' }}
+                        style={{ height: '120px' }}
                     />
                 </Grid>
                 <Grid
                     item
                 >
-                    <Paper sx={{ p: '32px' }}>
+                    <Paper sx={{ p: '32px', background: '#fbf0e7' }}>
                         <Grid
                             container
                             direction='column'
-                            rowGap={'2rem'}
+                            rowGap={'1.5rem'}
                             component='form'
                             onSubmit={handleSubmit}
                             sx={{ width: '100%' }}
@@ -167,11 +217,11 @@ function DonationFormScreen() {
                                         </Grid>
                                     ) : (
                                         <Grid item>
-                                            <Paper variant='outlined' sx={{p:'16px', background: '#ffebee'}}>
-                                            <Typography variant='subtitle1' sx={{fontWeight:'500'}}>
-                                                Go to <a href='https://www.google.com/maps' target="_blank">Google map</a> and copy your location value and paste in the location field. 
-                                            </Typography>
-                                            <Typography variant='subtitle1'>Click <a href='#'> here</a> to get video description.</Typography>
+                                            <Paper variant='outlined' sx={{ p: '16px', background: '#ffebee' }}>
+                                                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
+                                                    Go to <a href='https://www.google.com/maps' target="_blank">Google map</a> and copy your location value and paste in the location field.
+                                                </Typography>
+                                                <Typography variant='subtitle1'>Click <a href='#' target="_blank"> here</a> to get video description.</Typography>
                                             </Paper>
                                         </Grid>
                                     )
@@ -258,6 +308,48 @@ function DonationFormScreen() {
                                     onChange={handleInputChange}
                                 />
                             </Grid>
+                            <Grid item >
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    label="How many people's food"
+                                    placeholder="How many people's food"
+                                    name='quantity'
+                                    type='number'
+                                    value={quantity}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+
+                            <Grid item >
+                                <TextField
+                                    fullWidth
+                                    id="outlined-basic"
+                                    variant="outlined"
+                                    label="image URL"
+                                    placeholder="Image URL"
+                                    name='imageURL'
+                                    value={imageURL}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                            <Grid item>
+                                {
+                                    isUploading
+                                        ? <CircularProgress />
+                                        : <TextField
+                                            fullWidth
+                                            size='small'
+                                            type='file'
+                                            onChange={handleFileChange}
+                                        />
+                                }
+                            </Grid>
+                            <Grid item>
+                                <Button variant='contained' size='small' onClick={handleUpload} disabled={isUploading}>Upload</Button>
+                            </Grid>
+
                             <Grid item>
                                 <TextField
                                     fullWidth
@@ -294,4 +386,4 @@ function DonationFormScreen() {
     )
 }
 
-export default DonationFormScreen
+export default FoodForm
