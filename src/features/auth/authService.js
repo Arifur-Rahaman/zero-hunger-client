@@ -17,6 +17,28 @@ const signup = async (userData)=>{
     return res.data
 }
 
+const getMe = async (token)=>{
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const res = await axios.get(URL + `/me`, config)
+    return res.data
+}
+
+//Upload profile image
+const uploadProfileImageFile = async (imgageData, token) => {
+    const config = {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            authorization: `Bearer ${token}`,
+        }
+    }
+    const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/upload`, imgageData, config)
+    return data
+}
+
 const updateUserProfile = async (data, token)=>{
     const config = {
         headers: {
@@ -34,4 +56,4 @@ const signout =  ()=>{
     localStorage.removeItem('user')
 }
 
-export const authService = {signin, signout, updateUserProfile, signup}
+export const authService = {signin, signout, updateUserProfile, signup, getMe, uploadProfileImageFile}

@@ -4,7 +4,9 @@ import { authService } from "./authService"
 const signedInUser = JSON.parse(localStorage.getItem('user'))
 const initialState = {
     user: signedInUser ? signedInUser : null,
+    profile: {},
     isLoading: false,
+    isUploading: false,
     isSuccess: false,
     isError: false,
     error: ''
@@ -36,10 +38,33 @@ export const signup = createAsyncThunk(
     }
 )
 
+export const getMe = createAsyncThunk(
+    'auth/getMe',
+    async (_, thunkApi) => {
+        const token = thunkApi.getState().auth.user.token
+        try {
+            return await authService.getMe(token)
+        } catch (error) {
+            const message = (error.response && error.response.data && error.response.data.message) ||
+                error.message || error.toString()
+            return thunkApi.rejectWithValue(message)
+        }
+    }
+)
+
 export const signout = createAsyncThunk(
     'auth/signout',
     async (_, thunkApi) => {
         await authService.signout()
+    }
+)
+
+//Upload profile image
+export const uploadProfileImageFile = createAsyncThunk(
+    'auth/uploadProductImageFile',
+    async (formData, thunkApi)=>{
+        const token = thunkApi.getState().auth.user.token
+        return await authService.uploadProfileImageFile(formData, token)
     }
 )
 
@@ -110,6 +135,32 @@ export const authSlice = createSlice({
             })
             .addCase(updateUserProfile.rejected, (state, action) => {
                 state.isLoading = false
+                state.isError = true
+                state.error = action.payload
+            })
+            .addCase(getMe.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getMe.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.profile = action.payload
+            })
+            .addCase(getMe.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.error = action.payload
+            })
+            .addCase(uploadProfileImageFile.pending, (state) => {
+                state.isUploading = true
+            })
+            .addCase(uploadProfileImageFile.fulfilled, (state, action) => {
+                state.isUploading = false
+                state.isSuccess = true
+                state.profile = {...state.profile, imageURL: action.payload.secure_url}
+            })
+            .addCase(uploadProfileImageFile.rejected, (state, action) => {
+                state.isUploading = false
                 state.isError = true
                 state.error = action.payload
             })

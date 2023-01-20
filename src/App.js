@@ -15,6 +15,7 @@ import RequestScreen from './pages/RequestScreen';
 import RequestForm from './pages/RequestForm';
 import RequestListScreen from './pages/RequestListScreen';
 import FoodEditScreen from './pages/FoodEditScreen';
+import ProfileScreen from './pages/ProfileScreen';
 
 function App() {
   return (
@@ -25,6 +26,9 @@ function App() {
         <Route path='/signup' element={<RegisterScreen />} />
 
         {/* ***Private Route*** */}
+        <Route path="/profile" element={<PrivateRoute />}>
+          <Route path='/profile' element={<ProfileScreen />} />
+        </Route>
         <Route path="/foods" element={<PrivateRoute />}>
           <Route path='/foods' element={<AvailableFoodScreen />} />
         </Route>
