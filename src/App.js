@@ -41,8 +41,11 @@ function App() {
         <Route path="/requests" element={<PrivateRoute />}>
           <Route path='/requests' element={<RequestListScreen />} />
         </Route>
-        <Route path="/request/:foodId" element={<PrivateRoute />}>
-          <Route path='/request/:foodId' element={<RequestScreen />} />
+        <Route path="/requests/:requestId" element={<PrivateRoute />}>
+          <Route path='/requests/:requestId' element={<RequestForm />} />
+        </Route>
+        <Route path="/request/food/:foodId" element={<PrivateRoute />}>
+          <Route path='/request/food/:foodId' element={<RequestScreen />} />
         </Route>
         <Route path="/foods/:foodId" element={<PrivateRoute />}>
           <Route path='/foods/:foodId' element={<RequestForm />} />

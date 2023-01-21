@@ -2,7 +2,7 @@ import { Button, CircularProgress, Grid, TextField, Typography, useTheme } from 
 import { Container } from '@mui/system'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { makeRequest } from '../features/request/requestSlice'
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
@@ -16,14 +16,17 @@ function RequestForm() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const theme = useTheme()
+    const {requestId} = useParams()
+
     const handleInputChange = (e) => {
         setMotivation(e.target.value)
     }
     useEffect(() => {
-        if (Object.keys(selectedFood).length === 0) {
+        if (Object.keys(selectedFood).length === 0 && !requestId) {
             navigate('/foods')
         }
-    }, [selectedFood, navigate])
+    }, [selectedFood, navigate, requestId])
+    
     const handleSubmit = (e) => {
         dispatch(makeRequest({ motivation, donor, food: _id }))
             .unwrap()

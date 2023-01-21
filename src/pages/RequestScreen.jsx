@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Modal, Paper, Typography } from '@mui/material'
+import { Box, Button, Grid, Modal, Paper, Rating, Typography } from '@mui/material'
 import CallIcon from '@mui/icons-material/Call';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
@@ -73,14 +73,35 @@ function RequestScreen() {
                     <Grid item md={3}>
                         <Paper sx={{ padding: '20px' }}>
                             <Stack gap='6px' alignItems='flex-start'>
-                                <Typography variant='h6'>
-                                    Requested by Mr. {request?.volunteer?.name}
-                                </Typography>
-                                <Typography variant='body1'>
-                                    {request?.motivation}
+                                {/* Volunteer Profile Start*/}
+                                <Stack direction='row' alignItems={'center'} columnGap='16px' sx={{ mb: '8px' }}>
+                                    <img
+                                        src={request.volunteer.imageURL}
+                                        alt='volunteer_img'
+                                        style={{
+                                            width: '42px',
+                                            height: '42px',
+                                            borderRadius: '100px'
+                                        }}
+
+                                    />
+                                    <Box>
+                                        <Typography variant='h6'>
+                                            Mr. {request?.volunteer?.name}
+                                        </Typography>
+                                        <Stack direction='row' columnGap={'8px'}>
+                                            <Rating name="read-only" size='small' value={4} readOnly />
+                                            <Typography>5 food served</Typography>
+                                        </Stack>
+
+                                    </Box>
+                                </Stack>
+                                <Typography>
+                                    Updated at {new Date(request.updatedAt).toDateString()}
                                 </Typography>
                                 <Typography
                                     variant='body2'
+                                    sx={{ mb: '8px' }}
                                 >
                                     <Badge
                                         bg={request?.status === 'confirmed' ? 'primary' : 'warning'}
@@ -88,9 +109,11 @@ function RequestScreen() {
                                         {request?.status}
                                     </Badge>
                                 </Typography>
-                                <Typography>
-                                    Updated at {new Date(request.updatedAt).toDateString()}
-                                </Typography>
+                                <Box sx={{border:'1px solid #ccc'}}>
+                                    <Typography variant='body1'>
+                                        {request?.motivation}
+                                    </Typography>
+                                </Box>
                                 {
                                     request.status === 'confirmed'
                                         ? <Button
@@ -126,7 +149,7 @@ function RequestScreen() {
                         <Stack gap='8px'>
                             <Typography variant='h6'>Mr. {contactInfo.name}</Typography>
                             <Stack direction='row' alignItems='center' columnGap='8px'>
-                                <EmailIcon sx={{fontSize:'18px'}} />
+                                <EmailIcon sx={{ fontSize: '18px' }} />
                                 <Typography variant='subtitle1'>{contactInfo.email}</Typography>
                             </Stack>
                             <Stack direction='row'>

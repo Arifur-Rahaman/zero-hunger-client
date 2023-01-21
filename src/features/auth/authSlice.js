@@ -125,19 +125,6 @@ export const authSlice = createSlice({
             .addCase(signout.fulfilled, (state) => {
                 state.user = null
             })
-            .addCase(updateUserProfile.pending, (state) => {
-                state.isLoading = true
-            })
-            .addCase(updateUserProfile.fulfilled, (state, action) => {
-                state.isLoading = false
-                state.isSuccess = true
-                state.user = action.payload
-            })
-            .addCase(updateUserProfile.rejected, (state, action) => {
-                state.isLoading = false
-                state.isError = true
-                state.error = action.payload
-            })
             .addCase(getMe.pending, (state) => {
                 state.isLoading = true
             })
@@ -161,6 +148,19 @@ export const authSlice = createSlice({
             })
             .addCase(uploadProfileImageFile.rejected, (state, action) => {
                 state.isUploading = false
+                state.isError = true
+                state.error = action.payload
+            })
+            .addCase(updateUserProfile.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateUserProfile.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.profile = action.payload
+            })
+            .addCase(updateUserProfile.rejected, (state, action) => {
+                state.isLoading = false
                 state.isError = true
                 state.error = action.payload
             })

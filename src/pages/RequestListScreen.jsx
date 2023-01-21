@@ -2,6 +2,7 @@ import { Box, Button, Grid, Modal, Paper, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import CallIcon from '@mui/icons-material/Call';
 import CancelIcon from '@mui/icons-material/Cancel';
+import EditIcon from '@mui/icons-material/Edit';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import PlaceIcon from '@mui/icons-material/Place';
 import React, { useEffect, useState } from 'react'
@@ -10,6 +11,7 @@ import Badge from '../components/Badge'
 import { getRequestByVolunteer } from '../features/request/requestSlice'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
+import { useNavigate } from 'react-router-dom';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -23,6 +25,7 @@ const style = {
 
 function RequestListScreen() {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { volunteerRequests } = useSelector(state => state.request)
   const [contactInfo, setContactInfo] = useState({})
   const [open, setOpen] = useState(false)
@@ -49,8 +52,13 @@ function RequestListScreen() {
       {
         volunteerRequests.map(request => (
           <Grid item md={3} key={request._id}>
-            <Paper sx={{ padding: '20px' }}>
-              <Stack gap='6px' alignItems='flex-start'>
+            <Paper>
+              <img
+                src={request.food.imageURL}
+                alt='food'
+                style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+              />
+              <Stack gap='6px' alignItems='flex-start' sx={{ padding: '16px' }}>
                 <Typography variant='h6'>
                   Donated by Mr. {request?.donor?.name}
                 </Typography>
@@ -82,8 +90,8 @@ function RequestListScreen() {
                 </Typography>
                 <Typography variant='body2'>
                   Updated At {new Date(request.updatedAt).toDateString()}
-                </Typography>
-                <Typography variant='subtitle2' sx={{ textTransform: 'capitalize' }}>
+                </Typography >
+                <Typography variant='subtitle2' sx={{ textTransform: 'capitalize', mb: '16px' }}>
                   <Badge bg={request?.status === 'confirmed' ? 'primary' : request?.status === 'denied' ? 'error' : 'warning'}>
                     {request.status}
                   </Badge>
@@ -101,11 +109,18 @@ function RequestListScreen() {
                           Contact
                         </Button>
                       ) : (
-                        <Stack>
+                        <Stack direction={'row'} columnGap='8px'>
+                          <Button
+                            variant='contained'
+                            endIcon={<EditIcon/>}
+                    
+                          >
+                            Edit
+                          </Button>
                           <Button
                             endIcon={<CancelIcon />}
                             color={request.status === 'pending' ? "error" : "primary"}
-                            sx={{ mt: '8px' }}
+
                             variant='contained'
                             disabled={request.status === 'denied'}
                           >

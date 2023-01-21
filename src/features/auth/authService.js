@@ -45,10 +45,10 @@ const updateUserProfile = async (data, token)=>{
             Authorization: `Bearer ${token}`
         }
     }
-    const res = await axios.put(URL + `/profile`, data, config)
-    if(res){
-        localStorage.setItem('user', JSON.stringify(res.data))
-    }
+    const res = await axios.put(URL + `/me`, data, config)
+    // if(res){
+    //     localStorage.setItem('user', JSON.stringify(res.data))
+    // }
     return res.data
 }
 

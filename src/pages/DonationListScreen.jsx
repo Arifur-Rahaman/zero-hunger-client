@@ -20,7 +20,7 @@ function DonationListScreen() {
     }, [dispatch])
 
     const handleClick = (foodId) => {
-        navigate(`/request/${foodId}`)
+        navigate(`/request/food/${foodId}`)
     }
     const handleDelete = (food) => {
         if (window.confirm("Do you really want to Delete?")) {

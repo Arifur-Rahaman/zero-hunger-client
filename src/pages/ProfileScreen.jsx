@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMe, uploadProfileImageFile } from '../features/auth/authSlice'
+import { getMe, updateUserProfile, uploadProfileImageFile } from '../features/auth/authSlice'
 import Loader from '../components/Loader'
 import EditIcon from '@mui/icons-material/Edit';
 import HomeIcon from '@mui/icons-material/Home';
@@ -30,11 +30,24 @@ function ProfileScreen() {
     bodyFormData.append('file', file);
     setFileData(bodyFormData)
 }
+
+const handleUpdate = ()=>{
+  dispatch(updateUserProfile({imageURL: profile.imageURL}))
+  .unwrap()
+  .then(()=>{
+    toast.success('Updated!')
+    setEditMode(false)
+  })
+  .catch((error)=>{
+    toast.error('Something wrong!')
+  })
+}
   const handleUpload = ()=>{
     dispatch(uploadProfileImageFile(fileData))
     .unwrap()
     .then(()=>{
       toast.success('Uploaded')
+      
     })
     .catch((error)=>{
       toast.error(error)
@@ -101,6 +114,7 @@ function ProfileScreen() {
             editMode
               ? (<>
               <Button
+                onClick={handleUpdate}
                 variant='contained'
                 sx={{mr:'8px'}}
               >
