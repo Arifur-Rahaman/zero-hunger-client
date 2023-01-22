@@ -55,7 +55,7 @@ export default function AppBar() {
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flex: 1, fontWeight: '600' }}>
                         <Link style={{ textDecoration: 'none' }} to={'/'}>
-                            WASTE FOOD DONATION
+                            FOOD DONATION
                         </Link>
                     </Typography>
 

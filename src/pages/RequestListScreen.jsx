@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Modal, Paper, Typography } from '@mui/material'
+import { Box, Button, Container, Grid, Modal, Paper, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import CallIcon from '@mui/icons-material/Call';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -48,7 +48,9 @@ function RequestListScreen() {
   }
 
   return (
-    <Grid container spacing={4} sx={{ p: '0 32px' }}>
+    <Container>
+    <Typography variant='h4' sx={{mb:'32px'}}>All Requests</Typography>
+    <Grid container spacing={4}>
       {
         volunteerRequests.map(request => (
           <Grid item md={3} key={request._id}>
@@ -56,7 +58,7 @@ function RequestListScreen() {
               <img
                 src={request.food.imageURL}
                 alt='food'
-                style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+                style={{ width: '100%', height: '200px', borderRadius: '10px 10px 0 0' }}
               />
               <Stack gap='6px' alignItems='flex-start' sx={{ padding: '16px' }}>
                 <Typography variant='h6'>
@@ -101,7 +103,6 @@ function RequestListScreen() {
                     request.status === 'confirmed'
                       ? (
                         <Button
-                          sx={{ mt: '8px' }}
                           variant='contained'
                           endIcon={<CallIcon />}
                           onClick={() => { handleContactView(request) }}
@@ -163,6 +164,7 @@ function RequestListScreen() {
         </Box>
       </Modal>
     </Grid>
+    </Container>
   )
 }
 

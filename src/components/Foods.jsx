@@ -26,17 +26,17 @@ function Foods() {
     }
 
     return (
-        <Grid container spacing={4} sx={{ p: '0 32px', mb: '20px' }}>
+        <Grid container spacing={4} sx={{mb: '20px' }}>
             {
                 foods.map(food => {
                     if (food.status === 'available') {
                         return (
-                            <Grid item md={3} key={food._id}>
+                            <Grid item xs={12} md={3} key={food._id}>
                                 <Paper>
                                     <img
                                         src={food.imageURL}
                                         alt='food'
-                                        style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+                                        style={{ width: '100%', height: '200px', borderRadius: '10px 10px 0 0' }}
                                     />
                                     <Stack sx={{p:'16px 8px'}}>
                                         <Typography variant='h6'>{food.foodName}</Typography>

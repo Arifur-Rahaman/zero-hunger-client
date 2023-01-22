@@ -7,13 +7,14 @@ import { Button, Modal, Paper, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedFood } from '../features/foods/foodSlice';
+import SendIcon from '@mui/icons-material/Send';
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 250,
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -61,11 +62,11 @@ const Map = () => {
         return <p>{location?.error?.message}</p>
     }
     return (
-        <div style={{ padding: '20px' }}>
+        <div>
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={location.coordinates}
-                zoom={14}
+                zoom={11}
             >
                 {
                     foods?.map(food => {
@@ -92,7 +93,7 @@ const Map = () => {
                         <img
                             src={clickedFood.imageURL}
                             alt='food'
-                            style={{ width: '100%', height: '300px', borderRadius: '10px 10px 0 0' }}
+                            style={{ width: '100%', height: '200px', borderRadius: '10px 10px 0 0' }}
                         />
                         <Stack sx={{p:'8px 16px'}}>
                             <Typography variant='h6'>{clickedFood?.foodName}</Typography>
@@ -100,6 +101,7 @@ const Map = () => {
                             <Typography variant='subtitle1'>{clickedFood?.area}</Typography>
                             <Typography variant='subtitle1'>{clickedFood?.address}</Typography>
                             <Button
+                                endIcon={<SendIcon/>}
                                 sx={{ mt: '8px' }}
                                 variant='contained'
                                 onClick={() => handleMakeRequest(clickedFood)}
