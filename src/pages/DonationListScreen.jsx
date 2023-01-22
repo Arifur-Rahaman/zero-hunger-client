@@ -10,6 +10,7 @@ import Badge from '../components/Badge'
 import Loader from '../components/Loader'
 import { deleteFoodById, getUserFoods } from '../features/foods/foodSlice'
 import { toast } from 'react-toastify';
+import { truncate } from '../utils/truncate';
 
 function DonationListScreen() {
     const dispatch = useDispatch()
@@ -73,9 +74,9 @@ function DonationListScreen() {
                                                     </Badge>
                                                 </Typography>
                                             </Stack>
-                                            <Typography variant='body1'>{food.description}</Typography>
+                                            <Typography variant='body1'>{truncate(food.description, 25)}</Typography>
                                             <Typography variant='body2'>{food.area}</Typography>
-                                            <Typography variant='subtitle2'>{food.address}</Typography>
+                                            <Typography variant='subtitle2'>{truncate(food.address, 30)}</Typography>
 
                                             <Stack direction='row' justifyContent='space-between' sx={{ mt: '8px' }}>
                                                 <Button

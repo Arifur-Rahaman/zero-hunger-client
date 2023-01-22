@@ -12,6 +12,7 @@ import { getRequestByVolunteer } from '../features/request/requestSlice'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import { useNavigate } from 'react-router-dom';
+import { truncate } from '../utils/truncate';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -62,7 +63,7 @@ function RequestListScreen() {
               />
               <Stack gap='6px' alignItems='flex-start' sx={{ padding: '16px' }}>
                 <Typography variant='h6'>
-                  Donated by Mr. {request?.donor?.name}
+                  Donated by Mr. {truncate(request?.donor?.name, 7)}
                 </Typography>
                 <Stack direction='row' alignItems='center' spacing={0.5}>
                   <LunchDiningIcon sx={{ fontSize: '16px' }} />
@@ -83,12 +84,8 @@ function RequestListScreen() {
                 </Stack>
                 <Typography
                   variant='body2'
-                  sx={{
-                    border: '1px solid gray',
-                    p: '2px 4px'
-                  }}
                 >
-                  {request.motivation}
+                  {truncate(request.motivation, 30)}
                 </Typography>
                 <Typography variant='body2'>
                   Updated At {new Date(request.updatedAt).toDateString()}

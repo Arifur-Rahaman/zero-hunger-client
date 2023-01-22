@@ -6,6 +6,7 @@ import { getFoods, setSelectedFood } from '../features/foods/foodSlice'
 import SendIcon from '@mui/icons-material/Send';
 import Loader from './Loader'
 import { Stack } from '@mui/system'
+import { truncate } from '../utils/truncate'
 
 function Foods() {
     const { foods, isLoading } = useSelector(state => state.food)
@@ -38,11 +39,11 @@ function Foods() {
                                         alt='food'
                                         style={{ width: '100%', height: '200px', borderRadius: '10px 10px 0 0' }}
                                     />
-                                    <Stack sx={{p:'16px 8px'}}>
+                                    <Stack sx={{p:'16px 8px', rowGap:'4px'}}>
                                         <Typography variant='h6'>{food.foodName}</Typography>
-                                        <Typography variant='subtitle1'>{food.description}</Typography>
+                                        <Typography variant='body2'>{truncate(food.description, 35)}</Typography>
                                         <Typography variant='subtitle1'>{food.area}</Typography>
-                                        <Typography variant='subtitle1'>{food.address}</Typography>
+                                        <Typography variant='subtitle2'>{truncate(food.address, 35)}</Typography>
                                         <Button
                                             sx={{ mt: '8px' }}
                                             variant='contained'

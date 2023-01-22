@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import Badge from '../components/Badge'
 import Loader from '../components/Loader'
 import { confirmRequest, getRequest } from '../features/request/requestSlice'
+import { truncate } from '../utils/truncate';
 
 const style = {
     position: 'absolute',
@@ -94,7 +95,7 @@ function RequestScreen() {
                                         />
                                         <Box>
                                             <Typography variant='h6'>
-                                                Mr. {request?.volunteer?.name}
+                                                Mr. {truncate(request?.volunteer?.name, 10)}
                                             </Typography>
                                             <Stack direction='column' columnGap={'8px'}>
                                                 <Rating name="read-only" size='small' value={4} readOnly />
@@ -116,9 +117,9 @@ function RequestScreen() {
                                             {request?.status}
                                         </Badge>
                                     </Typography>
-                                    <Box sx={{ border: '1px solid #ccc' }}>
-                                        <Typography variant='body1'>
-                                            {request?.motivation}
+                                    <Box sx={{ border: '1px solid #ccc', width:'100%', p:'6px'}}>
+                                        <Typography variant='body2'>
+                                            {truncate(request?.motivation, 30)}
                                         </Typography>
                                     </Box>
                                     {
