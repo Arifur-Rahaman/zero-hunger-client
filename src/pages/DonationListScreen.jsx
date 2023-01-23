@@ -92,6 +92,7 @@ function DonationListScreen() {
                                                         variant='contained'
                                                         color='primary'
                                                         onClick={() => navigate(`/editFood/${food._id}`)}
+                                            
                                                     >
                                                         <EditIcon />
                                                     </IconButton>
@@ -99,7 +100,6 @@ function DonationListScreen() {
                                                         onClick={() => handleDelete(food)}
                                                         variant='contained'
                                                         color='error'
-                                                        disabled={food.status === 'booked'}
                                                     >
                                                         <DeleteIcon size="large" />
                                                     </IconButton>

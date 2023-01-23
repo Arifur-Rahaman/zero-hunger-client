@@ -20,8 +20,18 @@ function ProfileScreen() {
   const {isUploading,  isLoading, isError, error, profile } = useSelector(state => state.auth)
   const [editMode, setEditMode] = useState(false)
   const [fileData, setFileData] = useState(null)
+  const [profileData, setProfileData] = useState({
+    name:'', email:'', address:'', phone:''
+  })
+
   useEffect(() => {
     dispatch(getMe())
+    .unwrap()
+    .then((data)=>{
+      setProfileData(data)
+    }).catch((err)=>{
+      toast.error(err)
+    })
   }, [dispatch])
 
   const handleFileChange = (e) => {
@@ -31,8 +41,20 @@ function ProfileScreen() {
     setFileData(bodyFormData)
 }
 
+const handleChange = (e)=> {
+  setProfileData((pre)=>({...pre, [e.target.name]: e.target.value}))
+}
+
 const handleUpdate = ()=>{
-  dispatch(updateUserProfile({imageURL: profile.imageURL}))
+  dispatch(updateUserProfile(
+    {
+      imageURL: profile.imageURL, 
+      name: profileData.name, 
+      email:profileData.email, 
+      address: profileData.address, 
+      phone:profileData.phone
+    }
+    ))
   .unwrap()
   .then(()=>{
     toast.success('Updated!')
@@ -81,8 +103,25 @@ const handleUpdate = ()=>{
               <Button variant='contained' size='small' onClick = {handleUpload} disabled={isUploading}>{isUploading? 'Uploading...': 'Upload'}</Button></>
             }
           </Grid>
-          <Grid item container direction={'column'} md={6} rowGap='16px'>
-            <Box sx={{ borderBottom: '1px solid #ccc', p: '0 0 8px 4px' }}>
+          <Grid item container direction={editMode?'row':'column'} md={6} rowGap='16px'>
+            {
+            editMode
+            ?(<>
+              <Grid item xs={12}>
+                <TextField value={profileData.name} onChange={handleChange} fullWidth label='Name' name='name' variant='standard'/>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField value={profileData.address} onChange={handleChange} fullWidth label='Address' name='address' variant='standard'/>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField value={profileData.email} onChange={handleChange} fullWidth label='Email' name='email' variant='standard'/>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField value={profileData.phone} onChange={handleChange} fullWidth label='Phone' name='phone' variant='standard'/>
+              </Grid>
+              </>
+            )
+            :(<><Box sx={{ borderBottom: '1px solid #ccc', p: '0 0 8px 4px' }}>
               <Typography variant='h4'>{profile.name}</Typography>
               <Typography variant='subtitle2'>A proud user of Food Wastage Management Stystem</Typography>
             </Box>
@@ -97,7 +136,8 @@ const handleUpdate = ()=>{
             <Stack direction={'row'} alignItems='center' columnGap='8px'>
               <PhoneInTalkIcon />
               <Typography variant='h6' sx={{ p: '0 0 4px 4px' }}>{profile.phone}</Typography>
-            </Stack>
+            </Stack></>)
+          }
           </Grid>
         </Grid>
         <Grid

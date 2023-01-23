@@ -13,6 +13,7 @@ function Foods() {
     const {user} = useSelector(state=>state.auth)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    
     useEffect(() => {
         dispatch(getFoods())
     }, [dispatch])

@@ -68,6 +68,20 @@ export const getRequestByVolunteer = createAsyncThunk(
         }
     }
 )
+//Delete request by id
+export const deleteRequest = createAsyncThunk(
+    'request/deleteRequest',
+    async (id, thunkApi) => {
+        const token = thunkApi.getState().auth.user.token
+        try {
+            return await requestService.deleteRequest(id, token)
+        } catch (error) {
+            const message = (error.response && error.response.data && error.response.data.message) ||
+                error.message || error.toString()
+            return thunkApi.rejectWithValue(message)
+        }
+    }
+)
 
 export const requestSlice = createSlice({
     name: 'food',
@@ -126,6 +140,20 @@ export const requestSlice = createSlice({
                 state.requests = action.payload
             })
             .addCase(confirmRequest.rejected, (state, { payload }) => {
+                state.isLoading = false
+                state.isError = true
+                state.error = payload
+            })
+
+            .addCase(deleteRequest.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(deleteRequest.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.volunteerRequests = state.volunteerRequests.filter((request)=>request._id!==action.payload._id)
+            })
+            .addCase(deleteRequest.rejected, (state, { payload }) => {
                 state.isLoading = false
                 state.isError = true
                 state.error = payload

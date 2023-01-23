@@ -11,6 +11,7 @@ import Badge from '../components/Badge'
 import Loader from '../components/Loader'
 import { confirmRequest, getRequest } from '../features/request/requestSlice'
 import { truncate } from '../utils/truncate';
+import { addRating, getRatings } from '../features/rating/ratingSlice';
 
 const style = {
     position: 'absolute',
@@ -27,13 +28,23 @@ function RequestScreen() {
     const { foodId } = useParams()
     const dispatch = useDispatch()
     const { requests, isLoading } = useSelector((state) => state.request)
+    const { ratings, isLoading: isRatingLoading } = useSelector((state) => state.rating)
     const [contactInfo, setContactInfo] = useState({})
     const [open, setOpen] = useState(false)
+    const [openDocuments, setOpenDocuments] = useState(false)
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [servedFoodInfo, setServedFoodInfo] = useState({ imageURL: '', description: '' })
+    const [volunteer, setVolunteer] = useState(null)
+    const [rating, setRating] = React.useState(0);
+
     useEffect(() => {
         dispatch(getRequest(foodId))
     }, [foodId, dispatch])
+
+    useEffect(() => {
+        dispatch(getRatings())
+    }, [dispatch])
 
     const handleConfirm = (request) => {
         dispatch(confirmRequest(request))
@@ -44,6 +55,12 @@ function RequestScreen() {
             .catch((error) => {
                 toast.error(error)
             })
+    }
+
+    const handleOpenDocuments = (servedInfo, volunteer) => {
+        setServedFoodInfo(servedInfo)
+        setVolunteer(volunteer)
+        setOpenDocuments(true)
     }
 
     const handleContactView = (request) => {
@@ -57,7 +74,20 @@ function RequestScreen() {
         handleOpen()
     }
 
-    if (isLoading) {
+    const handleRateSubmit = (e) => {
+        dispatch(addRating({ volunteer, rating }))
+            .unwrap()
+            .then(() => {
+                toast.success('Rated!')
+                setOpenDocuments(false)
+            })
+            .catch((error) => {
+                toast.error(error)
+            })
+        e.preventDefault()
+    }
+
+    if (isLoading || isRatingLoading) {
         return <Loader />
     }
     if (requests.length === 0) {
@@ -69,84 +99,110 @@ function RequestScreen() {
     }
     return (
         <Container>
-            <Typography variant='h4' sx={{mb:'16px'}}>Requests for <br/> {foodId}</Typography>
+            <Typography variant='h4' sx={{ mb: '16px' }}>Requests for <br /> {foodId}</Typography>
             <Grid container spacing={4}>
                 {
-                    requests.map(request => (
-                        <Grid item md={3}>
-                            <Paper sx={{ padding: '20px' }}>
-                                <Stack gap='6px' alignItems='flex-start'>
-                                    {/* Volunteer Profile Start*/}
-                                    <Stack
-                                        direction='row'
-                                        alignItems={'center'}
-                                        columnGap='16px'
-                                        sx={{ mb: '8px' }}
-                                    >
-                                        <img
-                                            src={request.volunteer.imageURL}
-                                            alt='volunteer_img'
-                                            style={{
-                                                width: '42px',
-                                                height: '42px',
-                                                borderRadius: '100px'
-                                            }}
-
-                                        />
-                                        <Box>
-                                            <Typography variant='h6'>
-                                                Mr. {truncate(request?.volunteer?.name, 10)}
-                                            </Typography>
-                                            <Stack direction='column' columnGap={'8px'}>
-                                                <Rating name="read-only" size='small' value={4} readOnly />
-                                                <Typography>5 food served</Typography>
-                                            </Stack>
-
-                                        </Box>
-                                    </Stack>
-                                    <Typography>
-                                        Updated at {new Date(request.updatedAt).toDateString()}
-                                    </Typography>
-                                    <Typography
-                                        variant='body2'
-                                        sx={{ mb: '8px' }}
-                                    >
-                                        <Badge
-                                            bg={request?.status === 'confirmed' ? 'primary' : 'warning'}
+                    requests.map(request => {
+                        const totalRatings = ratings?.filter(element => element.volunteer === request.volunteer._id)
+                        const ratingsCount = totalRatings?.length
+                        const ratingTotal = totalRatings?.reduce((acc, curr) => acc + curr.rating, 0)
+                        const avgRating = Math.round(ratingTotal / ratingsCount)
+                        return (
+                            <Grid item md={3} key={ratings._id}>
+                                <Paper sx={{ padding: '20px' }}>
+                                    <Stack gap='6px' alignItems='flex-start'>
+                                        {/* Volunteer Profile Start*/}
+                                        <Stack
+                                            direction='row'
+                                            alignItems={'center'}
+                                            columnGap='16px'
+                                            sx={{ mb: '8px' }}
                                         >
-                                            {request?.status}
-                                        </Badge>
-                                    </Typography>
-                                    <Box sx={{ border: '1px solid #ccc', width:'100%', p:'6px'}}>
-                                        <Typography variant='body2'>
-                                            {truncate(request?.motivation, 30)}
-                                        </Typography>
-                                    </Box>
-                                    {
-                                        request.status === 'confirmed'
-                                            ? <Button
-                                                variant='contained'
-                                                endIcon={<CallIcon />}
-                                                onClick={() => { handleContactView(request) }}
-                                                sx={{ mt: '8px' }}
-                                            >
-                                                Contact
-                                            </Button>
-                                            : <Button
-                                                onClick={() => handleConfirm(request)}
-                                                sx={{ mt: '8px' }}
-                                                variant='contained'
-                                                disabled={request.status === 'denied'}
-                                            >
-                                                Confirm
-                                            </Button>
-                                    }
+                                            <img
+                                                src={request.volunteer.imageURL}
+                                                alt='volunteer_img'
+                                                style={{
+                                                    width: '42px',
+                                                    height: '42px',
+                                                    borderRadius: '100px'
+                                                }}
 
-                                </Stack>
-                            </Paper>
-                        </Grid>
-                    ))
+                                            />
+                                            <Box>
+                                                <Typography variant='h6'>
+                                                    Mr. {truncate(request?.volunteer?.name, 10)}
+                                                </Typography>
+                                                <Stack direction='column' columnGap={'8px'}>
+                                                    <Rating
+                                                        name="read-only"
+                                                        size='small'
+                                                        value={avgRating}
+                                                        readOnly
+                                                    />
+                                                    <Typography>{ratingsCount} reviews</Typography>
+                                                </Stack>
+
+                                            </Box>
+                                        </Stack>
+                                        <Typography>
+                                            Updated at {new Date(request.updatedAt).toDateString()}
+                                        </Typography>
+                                        <Typography
+                                            variant='body2'
+                                            sx={{ mb: '8px' }}
+                                        >
+                                            <Badge
+                                                bg={request?.status === 'confirmed' ? 'primary' : 'warning'}
+                                            >
+                                                {request.food.status === 'served' ? request.food.status : request?.status}
+                                            </Badge>
+                                        </Typography>
+                                        <Box sx={{ border: '1px solid #ccc', width: '100%', p: '6px' }}>
+                                            <Typography variant='body2'>
+                                                {truncate(request?.motivation, 30)}
+                                            </Typography>
+                                        </Box>
+                                        {
+                                            request.status === 'confirmed'
+                                                ? (<Stack direction={'row'} columnGap='8px'>
+                                                    <Button
+                                                        variant='contained'
+                                                        // endIcon={<CallIcon />}
+                                                        onClick={() => { handleContactView(request) }}
+                                                        sx={{ mt: '8px' }}
+                                                    >
+                                                        Contact
+                                                    </Button>
+                                                    {
+                                                        request.food.status === 'served'
+                                                            ? <Button
+                                                                variant='contained'
+                                                                size='small'
+                                                                sx={{ mt: '8px' }}
+                                                                onClick={() => handleOpenDocuments(request.food.servedInfo, request.volunteer._id)}
+                                                            >
+                                                                Documents
+                                                            </Button>
+                                                            : null
+                                                    }
+                                                </Stack>)
+                                                : (<Button
+                                                    onClick={() => handleConfirm(request)}
+                                                    sx={{ mt: '8px' }}
+                                                    variant='contained'
+                                                    disabled={request.status === 'denied'}
+                                                >
+                                                    Confirm
+                                                </Button>)
+                                        }
+
+                                    </Stack>
+                                </Paper>
+                            </Grid>
+                        )
+                    })
                 }
+                {/* Contact Modal */}
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -171,6 +227,39 @@ function RequestScreen() {
                                 </Stack>
                                 <Button variant='contained' onClick={handleClose}>Close</Button>
                             </Stack>
+                        </Paper>
+                    </Box>
+                </Modal>
+                {/* Documents Modal */}
+                <Modal
+                    open={openDocuments}
+                    onClose={() => setOpenDocuments(false)}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                        <Paper>
+                            <img style={{ width: '100%', height: '200px' }} src={servedFoodInfo.imageURL} alt='' />
+                            <form style={{ padding: '8px' }} onSubmit={handleRateSubmit}>
+                                <Typography sx={{ mb: '8px' }}>{servedFoodInfo.description}</Typography>
+                                <Box sx={{ mb: '8px' }}>
+                                    <Rating
+                                        name="simple-controlled"
+                                        value={rating}
+                                        onChange={(event, newValue) => {
+                                            setRating(newValue);
+                                        }}
+                                    />
+                                </Box>
+                                <Button
+                                    type="submit"
+                                    variant='contained'
+                                    size='small'
+                                    disabled={isRatingLoading}
+                                >
+                                    {isLoading? 'Loading': 'Rate'}
+                                </Button>
+                            </form>
                         </Paper>
                     </Box>
                 </Modal>
