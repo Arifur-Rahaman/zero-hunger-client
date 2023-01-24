@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 function Hero() {
     const navigate = useNavigate()
     return (
-        <Grid container sx={{ background: '#F3EFEF'}}>
-            <Grid item md={6} sx={{ background: '#F3EFEF' }}>
+        <Grid container>
+            <Grid item md={6}>
                 <Stack justifyContent='center' alignItems='center' sx={{ height: '100%' }}>
                     <Typography
                         variant='h4'
@@ -25,7 +25,7 @@ function Hero() {
                         endIcon={<ArrowForwardIcon />}
                         onClick={() => navigate('/donate')}
                     >
-                        Donate your Food
+                        Donate Food
                     </Button>
                 </Stack>
             </Grid>
