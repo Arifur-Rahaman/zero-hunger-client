@@ -318,6 +318,7 @@ function FoodForm({ data }) {
                                     name='quantity'
                                     type='number'
                                     value={quantity}
+                                    inputProps={{ min: 1, pattern: "[0-9]*" }}
                                     onChange={handleInputChange}
                                 />
                             </Grid>

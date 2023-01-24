@@ -1,5 +1,6 @@
 import React from 'react'
 import Hero from '../components/Hero'
+import Services from '../components/Services'
 import Welcome from '../components/Welcome'
 
 function HomeScreen() {
@@ -7,6 +8,7 @@ function HomeScreen() {
     <>
     <Hero/>
     <Welcome/>
+    <Services/>
     </>
   )
 }

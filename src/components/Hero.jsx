@@ -16,9 +16,11 @@ function Hero() {
                         sx={{
                             p: '0 40px',
                             fontWeight: '600',
-                            mb: '20px'
+                            mb: '20px',
+                            lineHeight:'72px',
+                            color:'#333'
                         }}>
-                        Giving is not just about make a donation, It's about making difference
+                        Giving is not just about make a donation, <br/>It's about making difference
                     </Typography>
                     <Button
                         variant='contained'
