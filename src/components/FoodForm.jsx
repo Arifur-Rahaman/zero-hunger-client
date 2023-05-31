@@ -8,6 +8,7 @@ import {
     Paper
 } from '@mui/material'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CheckIcon from '@mui/icons-material/Check';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -23,9 +24,6 @@ function FoodForm({ data }) {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { foodId } = useParams()
-    const [sameLocation, setSameLocation] = useState(true)
-    const [showWarning, setShowWarning] = useState(true)
-    const [manualLocation, setManualLocation] = useState('')
     const [isUploading, setIsUploading] = useState(false)
     const [fileData, setFileData] = useState(null)
 
@@ -41,10 +39,20 @@ function FoodForm({ data }) {
             lng: '',
         },
     })
+
+    const [validtaionError, setValidationError] = useState({
+        address: '',
+        description: '',
+        foodName: '',
+        imageURL: '',
+        area: '',
+        location: ''
+    })
+
+    console.log('error info', validtaionError)
     useEffect(() => {
         if (data) {
             setFoodInfo(data)
-            setManualLocation(`${data.location.lat}, ${data.location.lng}`)
         }
     }, [data])
     const { address, location, description, area, foodName, quantity, imageURL } = foodInfo
@@ -53,10 +61,6 @@ function FoodForm({ data }) {
         const newFoodInfo = { ...foodInfo }
         newFoodInfo[e.target.name] = e.target.value;
         setFoodInfo(newFoodInfo);
-    }
-
-    const handleManualLocationChange = (e) => {
-        setManualLocation(e.target.value)
     }
 
     const handleUpload = async () => {
@@ -91,15 +95,34 @@ function FoodForm({ data }) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        let newFoodInfo = { ...foodInfo, location:{...foodInfo.location}}
-        if (!sameLocation) {
-            const lat_lng = manualLocation.split(',')
-            const lat = +lat_lng[0]
-            const lng = +lat_lng[1]
-            newFoodInfo.location.lat = lat
-            newFoodInfo.location.lng = lng
+
+        //***Setting error message before form submit */
+        for (let param in foodInfo) {
+            if (foodInfo[param]) {
+                if (param === 'location' && (!foodInfo[param].lat || !foodInfo[param].lng)) {
+                    console.log('Inside Location param')
+                    setValidationError(prev => ({ ...prev, [param]: `Please access your location!` }))
+                }
+                else {
+                    setValidationError(prev => ({ ...prev, [param]: '' }))
+                }
+            } else {
+                if (param === 'foodName') {
+                    setValidationError(prev => ({ ...prev, [param]: `Food name can't be empty!` }))
+                }
+                if (param === 'imageURL') {
+                    setValidationError(prev => ({ ...prev, [param]: `Upload an image!` }))
+                }
+                else {
+                    setValidationError(prev => ({ ...prev, [param]: `${param.charAt(0).toUpperCase() + param.slice(1)} can't be empty!` }))
+                }
+            }
         }
+
+        let newFoodInfo = { ...foodInfo, location: { ...foodInfo.location } }
+
         if (foodId) {
+            //***Update food***/
             dispatch(updateFoodById(newFoodInfo))
                 .unwrap()
                 .then(() => {
@@ -111,6 +134,7 @@ function FoodForm({ data }) {
                     toast.error(error)
                 })
         } else {
+            //***Create Food***/
             dispatch(createFood(newFoodInfo))
                 .unwrap()
                 .then(() => {
@@ -132,12 +156,12 @@ function FoodForm({ data }) {
             lng: +position.coords.longitude
         };
         setFoodInfo(newFoodInfo);
+        toast.success('Accessed your location')
     }
     const handleError = (err) => {
         toast.error(err)
     }
     const accessLocation = () => {
-        console.log('Clicked access location')
         navigator.geolocation.getCurrentPosition(getLocation, handleError);
     }
 
@@ -174,60 +198,18 @@ function FoodForm({ data }) {
                                     Food Donation
                                 </Typography>
                             </Grid>
+                            <Grid item >
+                                <Button
+                                    onClick={accessLocation}
+                                    variant='contained'
+                                    type="button"
+                                    endIcon={foodInfo?.location.lat && foodInfo?.location.lng ? <CheckIcon /> : <LocationOnIcon />}
+                                >
+                                    {foodInfo?.location.lat && foodInfo?.location.lng ? 'Accessed Location' : 'Access Location'}
+                                </Button>
+                                <Typography variant='body2' color={'error'} style={{ marginTop: '0.125rem' }}>{validtaionError?.location}</Typography>
+                            </Grid>
 
-                            {
-                                showWarning && <Grid item>
-                                    <Paper variant="outlined" sx={{ p: '1rem', background: '#ffebee' }}>
-                                        <Typography sx={{ mb: '0.5rem' }}>
-                                            Are you far away from the food location?
-                                        </Typography>
-                                        <Button
-                                            onClick={() => {
-                                                setShowWarning(false);
-                                                setSameLocation(false);
-                                            }
-                                            }
-                                            variant='outlined'
-                                            size='small'
-                                            sx={{ mr: '1rem' }}>
-                                            yes
-                                        </Button>
-                                        <Button
-                                            variant='outlined'
-                                            size='small'
-                                            onClick={() => setShowWarning(false)}
-                                        >
-                                            No
-                                        </Button>
-                                    </Paper>
-                                </Grid>
-                            }
-                            <>
-                                {
-                                    sameLocation ? (
-                                        <Grid item >
-                                            <Button
-                                                onClick={accessLocation}
-                                                variant='contained'
-                                                type="button"
-                                                endIcon={<LocationOnIcon />}
-                                            >
-                                                Acces Location
-                                            </Button>
-                                        </Grid>
-                                    ) : (
-                                        <Grid item>
-                                            <Paper variant='outlined' sx={{ p: '16px', background: '#ffebee' }}>
-                                                <Typography variant='subtitle1' sx={{ fontWeight: '500' }}>
-                                                    Go to <a href='https://www.google.com/maps' target="_blank">Google map</a> and copy your location value and paste in the location field.
-                                                </Typography>
-                                                <Typography variant='subtitle1'>Click <a href='#' target="_blank"> here</a> to get video description.</Typography>
-                                            </Paper>
-                                        </Grid>
-                                    )
-
-                                }
-                            </>
                             <Grid item>
                                 <TextField
                                     fullWidth
@@ -238,6 +220,8 @@ function FoodForm({ data }) {
                                     onChange={handleInputChange}
                                     name='area'
                                     value={area}
+                                    error={validtaionError.area ? true : false}
+                                    helperText={validtaionError.area}
                                 />
                             </Grid>
                             <Grid item >
@@ -250,52 +234,10 @@ function FoodForm({ data }) {
                                     onChange={handleInputChange}
                                     name='address'
                                     value={address}
+                                    error={validtaionError.address ? true : false}
+                                    helperText={validtaionError.address}
                                 />
                             </Grid>
-                            {
-                                sameLocation ? (
-                                    <>
-                                        <Grid item>
-                                            <TextField
-                                                fullWidth
-                                                id="outlined-basic"
-                                                name='lat'
-                                                label='Click access location button to fill this field by latitude value of your location'
-                                                variant="outlined"
-                                                inputProps={
-                                                    { readOnly: true, }
-                                                }
-                                                value={location.lat}
-                                            />
-                                        </Grid>
-                                        <Grid item>
-                                            <TextField
-                                                fullWidth
-                                                id="outlined-basic"
-                                                name='lng'
-                                                variant="outlined"
-                                                label="Click access location button to fill this field by longitude value of your location"
-                                                inputProps={
-                                                    { readOnly: true, }
-                                                }
-                                                value={location.lng}
-                                            />
-                                        </Grid>
-                                    </>
-                                ) : (
-                                    <Grid item>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-basic"
-                                            name='location'
-                                            variant="outlined"
-                                            label="Enter location value from google map"
-                                            value={manualLocation}
-                                            onChange={handleManualLocationChange}
-                                        />
-                                    </Grid>
-                                )
-                            }
                             <Grid item >
                                 <TextField
                                     fullWidth
@@ -306,6 +248,8 @@ function FoodForm({ data }) {
                                     name='foodName'
                                     value={foodName}
                                     onChange={handleInputChange}
+                                    error={validtaionError.foodName ? true : false}
+                                    helperText={validtaionError.foodName}
                                 />
                             </Grid>
                             <Grid item >
@@ -322,35 +266,6 @@ function FoodForm({ data }) {
                                     onChange={handleInputChange}
                                 />
                             </Grid>
-
-                            <Grid item >
-                                <TextField
-                                    fullWidth
-                                    id="outlined-basic"
-                                    variant="outlined"
-                                    label="image URL"
-                                    placeholder="Image URL"
-                                    name='imageURL'
-                                    value={imageURL}
-                                    onChange={handleInputChange}
-                                />
-                            </Grid>
-                            <Grid item>
-                                {
-                                    isUploading
-                                        ? <CircularProgress />
-                                        : <TextField
-                                            fullWidth
-                                            size='small'
-                                            type='file'
-                                            onChange={handleFileChange}
-                                        />
-                                }
-                            </Grid>
-                            <Grid item>
-                                <Button variant='contained' size='small' onClick={handleUpload} disabled={isUploading}>Upload</Button>
-                            </Grid>
-
                             <Grid item>
                                 <TextField
                                     fullWidth
@@ -362,9 +277,44 @@ function FoodForm({ data }) {
                                     name='description'
                                     value={description}
                                     onChange={handleInputChange}
+                                    error={validtaionError.description ? true : false}
+                                    helperText={validtaionError.description}
                                 />
                             </Grid>
-                            <Grid item>
+                            {
+                                imageURL && (
+                                    <Grid item>
+                                        <img style={{ height: '150px', borderRadius: '8px' }} src={imageURL} alt='' />
+                                    </Grid>
+                                )
+                            }
+                            <Grid item container columnSpacing={2}>
+                                <Grid item xs={10}>
+                                    {
+                                        isUploading
+                                            ? <CircularProgress />
+                                            : <TextField
+                                                fullWidth
+                                                size='small'
+                                                type='file'
+                                                onChange={handleFileChange}
+                                                error={validtaionError.imageURL ? true : false}
+                                                helperText={validtaionError.imageURL}
+                                            />
+                                    }
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <Button
+                                        variant='contained'
+                                        size='small'
+                                        onClick={handleUpload}
+                                        disabled={isUploading || !fileData}
+                                    >
+                                        Upload
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            <Grid item container>
                                 <Grid item >
                                     {
                                         isLoading

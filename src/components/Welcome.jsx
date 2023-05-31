@@ -11,7 +11,7 @@ function Welcome() {
                     <img src={welcomeImage} style={{width:'100%'}} alt=''/>
                 </Grid>
                 <Grid item md={6}>
-                    <Typography variant='h4' sx={{mb:'32px'}}>Welcome to our Donation Area</Typography>
+                    <Typography variant='h4' sx={{mb:'32px'}}>Welcome To Our Donation Area</Typography>
                     <Typography variant='h6' sx={{mb:'32px'}}>
                         Over 90% of the food distributed by fod banks in the Trussell Trust network is Donated by the puplic - that's why your food donations are absolutly vital to our ability to give everyone referred to us a balanced and nutritious three day supply of food. Without your goodwill, our food banks would really struggle to perate.
                     </Typography>

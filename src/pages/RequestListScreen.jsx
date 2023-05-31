@@ -149,7 +149,7 @@ function RequestListScreen() {
             <Grid item md={3} key={request._id}>
               <Paper>
                 <img
-                  src={request.food.imageURL}
+                  src={request?.food?.imageURL}
                   alt='food'
                   style={{ width: '100%', height: '200px', borderRadius: '10px 10px 0 0' }}
                 />
@@ -184,7 +184,7 @@ function RequestListScreen() {
                   </Typography >
                   <Typography variant='subtitle2' sx={{ textTransform: 'capitalize', mb: '16px' }}>
                     <Badge bg={request?.status === 'confirmed' ? 'primary' : request?.status === 'denied' ? 'error' : 'warning'}>
-                      {request.food.status==='served'? request.food.status:request.status}
+                      {request?.food?.status==='served'? request.food.status:request.status}
                     </Badge>
                   </Typography>
                   <>
@@ -275,7 +275,7 @@ function RequestListScreen() {
                     <Typography variant='h6'>Make Food As Served</Typography>
                   </Grid>
                   {
-                    foodInfo.servedInfo.imageURL
+                    foodInfo?.servedInfo?.imageURL
                     ?(<Grid item xs={12}>
                       <img style={{width:'100%', height:'200px'}} src={foodInfo.servedInfo.imageURL} alt='food'/>
                     </Grid>):null

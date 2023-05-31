@@ -11,12 +11,12 @@ import Location from '../components/Location'
 function RequestForm() {
     const [motivation, setMotivation] = useState('')
     const { selectedFood } = useSelector(state => state.food)
-    const {isLoading} = useSelector(state=>state.request)
+    const { isLoading } = useSelector(state => state.request)
     const { donor, _id } = selectedFood
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const theme = useTheme()
-    const {requestId} = useParams()
+    const { requestId } = useParams()
 
     const handleInputChange = (e) => {
         setMotivation(e.target.value)
@@ -26,7 +26,7 @@ function RequestForm() {
             navigate('/foods')
         }
     }, [selectedFood, navigate, requestId])
-    
+
     const handleSubmit = (e) => {
         dispatch(makeRequest({ motivation, donor, food: _id }))
             .unwrap()
@@ -39,8 +39,9 @@ function RequestForm() {
             })
         e.preventDefault()
     }
+    console.log(selectedFood)
     return (
-        <Container>
+        <Container sx={{pb:'2rem'}}>
             <Grid
                 container
                 sx={{ p: '0 32px' }}
@@ -50,8 +51,8 @@ function RequestForm() {
                 direction='column'
             >
                 <Grid item>
-                    <Typography variant='h5' sx={{color: `${theme.palette.primary.main}`}}>
-                        Food {selectedFood._id}
+                    <Typography variant='h5'>
+                        Food Details
                     </Typography>
                 </Grid>
                 <Grid item container alignItems='center' columnGap='4px'>
@@ -65,7 +66,6 @@ function RequestForm() {
                     <Typography variant='body1'>
                         {selectedFood.area}
                     </Typography>
-
                 </Grid>
                 <Grid item>
                     <Typography>{selectedFood.address}</Typography>
@@ -73,7 +73,10 @@ function RequestForm() {
                 <Grid item>
                     <Location position={selectedFood.location} />
                 </Grid>
-                <Grid item sx={{mt:'16px'}}>
+                <Grid item>
+                    <img style={{ width: '100%' }} src={selectedFood?.imageURL} alt='food' />
+                </Grid>
+                <Grid item sx={{ mt: '16px' }}>
                     <TextField
                         fullWidth
                         id="outlined-basic"
@@ -90,8 +93,8 @@ function RequestForm() {
                 <Grid item>
                     {
                         isLoading
-                        ? <CircularProgress/>
-                        : <Button type='submit' variant='contained'>Submit</Button>
+                            ? <CircularProgress />
+                            : <Button type='submit' variant='contained'>Submit</Button>
                     }
                 </Grid>
             </Grid>

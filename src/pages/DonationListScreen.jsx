@@ -11,6 +11,7 @@ import Loader from '../components/Loader'
 import { deleteFoodById, getUserFoods } from '../features/foods/foodSlice'
 import { toast } from 'react-toastify';
 import { truncate } from '../utils/truncate';
+import AddIcon from '@mui/icons-material/Add';
 
 function DonationListScreen() {
     const dispatch = useDispatch()
@@ -43,9 +44,18 @@ function DonationListScreen() {
         <Container>
             <Grid container sx={{ p: '0 32px' }} direction='column'>
                 <Grid item>
-                    <Typography variant='h4'>
-                        All Donations
-                    </Typography>
+                    <Stack direction={'row'} alignItems={'center'} gap={'0.125rem'}>
+                        <Typography variant='h5'>
+                            All Donations
+                        </Typography>
+                        <IconButton
+                            onClick={()=>navigate('/donate')}
+                            color="primary"
+                            variant='contained'
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Stack>
                 </Grid>
                 <Grid item>
                     <Grid container spacing={4} sx={{ p: '32px 0' }}>
@@ -92,7 +102,7 @@ function DonationListScreen() {
                                                         variant='contained'
                                                         color='primary'
                                                         onClick={() => navigate(`/editFood/${food._id}`)}
-                                            
+
                                                     >
                                                         <EditIcon />
                                                     </IconButton>

@@ -27,7 +27,7 @@ function Services() {
     <Container>
       <Grid container sx={{ p: '42px 0' }}>
         <Grid item xs={12}>
-          <Typography align='center' variant='h4' sx={{ mb: '42px' }}>Other service area</Typography>
+          <Typography align='center' variant='h4' sx={{ mb: '42px' }}>Other Service Area</Typography>
         </Grid>
         <Grid item container spacing={6}>
           {
