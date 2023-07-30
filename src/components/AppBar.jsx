@@ -7,9 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Menu from './Menu';
 import { signout } from '../features/auth/authSlice';
 import { useLocation } from 'react-router-dom';
+import MobileDrawer from './MobileDrawer';
+import { useState } from 'react';
 
 
 export default function AppBar() {
+    const [open, setOpen] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.auth)
@@ -17,7 +20,6 @@ export default function AppBar() {
     const handleSignin = () => {
         navigate('/signin')
     }
-    console.log(location)
     const userItems = [
         {
             item: 'Profile',
@@ -49,18 +51,20 @@ export default function AppBar() {
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{display: {sm:'none', margin:'0 8px 0 0', padding:'0'}}}
+                        onClick={()=>setOpen(prev=>!prev)}
+                        sx={{ display: { sm: 'none', margin: '0 8px 0 0', padding: '0' } }}
                     >
                         <MenuIcon />
                     </IconButton>
+                    <MobileDrawer open={open} setOpen={setOpen} />
                     <Typography
                         variant="h6"
                         component="div"
-                        onClick={()=>navigate('/')}
+                        onClick={() => navigate('/')}
                         sx={{
                             flex: 1,
                             fontWeight: '600',
-                            display:{xs:'none',sm:'block'}
+                            display: { xs: 'none', sm: 'block' }
                         }}
                     >
                         FOOD DONATION
@@ -68,17 +72,18 @@ export default function AppBar() {
                     <Typography
                         variant="h6"
                         component="div"
-                        onClick={()=>navigate('/')}
+                        onClick={() => navigate('/')}
                         sx={{
                             flex: 1,
                             fontWeight: '600',
-                            display:{sm:'none'}
+                            display: { sm: 'none' },
+                            cursor: 'pointer'
                         }}
                     >
                         FD
                     </Typography>
 
-                    <Box component='div' sx={{ ml: 'auto', display:{xs:'none', sm:'block'}}}>
+                    <Box component='div' sx={{ ml: 'auto', display: { xs: 'none', sm: 'block' } }}>
                         {
                             user
                                 ? (

@@ -32,7 +32,7 @@ function Services() {
         <Grid item container spacing={6}>
           {
             cardData.map(element => (
-              <Grid item md={4}>
+              <Grid key={element.title} item md={4}>
                 <Paper>
                   <img src={element.image} alt='food_image' style={{ width: '100%', height: '300px', borderRadius: '4px 4px 0 0' }} />
                   <Box sx={{p:'16px'}}>

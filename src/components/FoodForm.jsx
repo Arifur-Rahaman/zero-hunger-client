@@ -48,8 +48,6 @@ function FoodForm({ data }) {
         area: '',
         location: ''
     })
-
-    console.log('error info', validtaionError)
     useEffect(() => {
         if (data) {
             setFoodInfo(data)
