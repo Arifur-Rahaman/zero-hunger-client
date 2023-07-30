@@ -2,7 +2,6 @@ import { Box, Button, Container, Grid, Modal, Paper, TextField, Typography } fro
 import { Stack } from '@mui/system'
 import CallIcon from '@mui/icons-material/Call';
 import CancelIcon from '@mui/icons-material/Cancel';
-import EditIcon from '@mui/icons-material/Edit';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import PlaceIcon from '@mui/icons-material/Place';
 import React, { useEffect, useState } from 'react'
@@ -22,7 +21,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: {xs:'90%', sm:'600px'},
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -142,7 +141,7 @@ function RequestListScreen() {
 
   return (
     <Container>
-      <Typography variant='h4' sx={{ mb: '32px' }}>All Requests</Typography>
+      <Typography variant='h5' sx={{ mb: '32px' }}>All Requests</Typography>
       <Grid container spacing={4}>
         {
           volunteerRequests.map(request => (
@@ -169,7 +168,7 @@ function RequestListScreen() {
                     spacing={0.5}
                   >
                     <PlaceIcon sx={{ fontSize: '16px' }} />
-                    <Typography variant='subtitle2'>
+                    <Typography variant='subtitle2'>Update
                       {request?.food?.area}
                     </Typography>
 
@@ -237,6 +236,7 @@ function RequestListScreen() {
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
+          sx={{maxWidth:'90%'}}
         >
           <Box sx={style}>
             <Paper sx={{ padding: '20px' }}>
@@ -284,16 +284,17 @@ function RequestListScreen() {
                     <TextField size='small' fullWidth label="Image URL" name='imageURL' value={foodInfo.servedInfo.imageURL} />
                   </Grid>
                   <Grid item container direction={'row'} alignItems='center' spacing={2}>
-                    <Grid item xs={9}>
+                    <Grid item xs={12}>
                       <TextField size='small' onChange={handleFileChange} type='file' />
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={12}>
                       <Button
                         variant='contained'
                         type="button"
                         size='small'
                         onClick={handleUpload}
                         disabled={isUploading}
+                        fullWidth
                       >
                         {isUploading ? 'uploading' : 'upload'}
                       </Button>

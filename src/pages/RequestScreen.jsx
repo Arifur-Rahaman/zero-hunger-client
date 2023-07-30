@@ -99,7 +99,8 @@ function RequestScreen() {
     }
     return (
         <Container>
-            <Typography variant='h4' sx={{ mb: '16px' }}>Requests for <br /> {foodId}</Typography>
+            {/* <Typography variant='subtitle1' sx={{ mb: '16px'}}>Requests for <br />Food Id: {foodId}</Typography> */}
+            <Typography variant='h5' sx={{ mb: '16px'}}>Requests</Typography>
             <Grid container spacing={4}>
                 {
                     requests.map(request => {
@@ -108,7 +109,7 @@ function RequestScreen() {
                         const ratingTotal = totalRatings?.reduce((acc, curr) => acc + curr.rating, 0)
                         const avgRating = Math.round(ratingTotal / ratingsCount)
                         return (
-                            <Grid item md={3} key={ratings._id}>
+                            <Grid item xs={12} md={3} key={ratings._id}>
                                 <Paper sx={{ padding: '20px' }}>
                                     <Stack gap='6px' alignItems='flex-start'>
                                         {/* Volunteer Profile Start*/}

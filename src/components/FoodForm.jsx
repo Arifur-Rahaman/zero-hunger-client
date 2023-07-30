@@ -178,7 +178,7 @@ function FoodForm({ data }) {
                 <Grid
                     item
                 >
-                    <Paper sx={{ p: '32px', background: '#fbf0e7' }}>
+                    <Paper sx={{ padding:{xs:'0.5rem', sm:'2rem'}, background: '#fbf0e7' }}>
                         <Grid
                             container
                             direction='column'
@@ -288,8 +288,8 @@ function FoodForm({ data }) {
                                     </Grid>
                                 )
                             }
-                            <Grid item container columnSpacing={2}>
-                                <Grid item xs={10}>
+                            <Grid item container columnSpacing={2} rowSpacing={2}>
+                                <Grid item xs={12} sm={10}>
                                     {
                                         isUploading
                                             ? <CircularProgress />
@@ -303,12 +303,13 @@ function FoodForm({ data }) {
                                             />
                                     }
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={12} sm={2}>
                                     <Button
                                         variant='contained'
                                         size='small'
                                         onClick={handleUpload}
                                         disabled={isUploading || !fileData}
+                                        fullWidth
                                     >
                                         Upload
                                     </Button>

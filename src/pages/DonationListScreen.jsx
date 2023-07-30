@@ -42,14 +42,15 @@ function DonationListScreen() {
     }
     return (
         <Container>
-            <Grid container sx={{ p: '0 32px' }} direction='column'>
-                <Grid item>
+            <Grid container direction='column' rowSpacing={'1rem'}>
+                {/* Page title*/}
+                <Grid item xs={12}>
                     <Stack direction={'row'} alignItems={'center'} gap={'0.125rem'}>
                         <Typography variant='h5'>
                             All Donations
                         </Typography>
                         <IconButton
-                            onClick={()=>navigate('/donate')}
+                            onClick={() => navigate('/donate')}
                             color="primary"
                             variant='contained'
                         >
@@ -57,70 +58,69 @@ function DonationListScreen() {
                         </IconButton>
                     </Stack>
                 </Grid>
-                <Grid item>
-                    <Grid container spacing={4} sx={{ p: '32px 0' }}>
-                        {
-                            userFoods.map(food => (
-                                <Grid item md={3} key={food._id}>
-                                    <Paper
-                                    >
-                                        <img
-                                            src={food.imageURL}
-                                            alt='food'
-                                            style={{ width: '100%', height: '200px', borderRadius: '10px 10px 0 0' }}
-                                        />
-                                        <Stack gap='4px' sx={{ p: '16px' }}>
-                                            <Stack
-                                                direction='row'
-                                                justifyContent='space-between'
-                                                alignItems='center'
-                                            >
-                                                <Typography variant='h6'>{food.foodName}</Typography>
-                                                <Typography variant='body2' sx={{ mb: '4px' }}>
-                                                    <Badge
-                                                        bg={food.status === 'booked' ? 'primary' : 'warning'}
-                                                    >
-                                                        {food.status}
-                                                    </Badge>
-                                                </Typography>
-                                            </Stack>
-                                            <Typography variant='body1'>{truncate(food.description, 25)}</Typography>
-                                            <Typography variant='body2'>{food.area}</Typography>
-                                            <Typography variant='subtitle2'>{truncate(food.address, 30)}</Typography>
 
-                                            <Stack direction='row' justifyContent='space-between' sx={{ mt: '8px' }}>
-                                                <Button
-                                                    variant='contained'
-                                                    size="small"
-                                                    onClick={() => handleClick(food._id)}
-                                                    endIcon={<VisibilityIcon fontSize='large' />}
+                <Grid item container xs={12} spacing={'2rem'}>
+                    {
+                        userFoods.map(food => (
+                            <Grid item xs={12} sm={6} md={3} key={food._id}>
+                                <Paper
+                                >
+                                    <img
+                                        src={food.imageURL}
+                                        alt='food'
+                                        style={{ height: '200px', width: '100%', borderRadius: '10px 10px 0 0' }}
+                                    />
+                                    <Stack gap='4px' sx={{ p: '1rem' }}>
+                                        <Stack
+                                            direction='row'
+                                            justifyContent='space-between'
+                                            alignItems='center'
+                                        >
+                                            <Typography variant='h6'>{food.foodName}</Typography>
+                                            <Typography variant='body2' sx={{ mb: '4px' }}>
+                                                <Badge
+                                                    bg={food.status === 'booked' ? 'primary' : 'warning'}
                                                 >
-                                                    Requests
-                                                </Button>
-                                                <Box>
-                                                    <IconButton
-                                                        variant='contained'
-                                                        color='primary'
-                                                        onClick={() => navigate(`/editFood/${food._id}`)}
-
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        onClick={() => handleDelete(food)}
-                                                        variant='contained'
-                                                        color='error'
-                                                    >
-                                                        <DeleteIcon size="large" />
-                                                    </IconButton>
-                                                </Box>
-                                            </Stack>
+                                                    {food.status}
+                                                </Badge>
+                                            </Typography>
                                         </Stack>
-                                    </Paper>
-                                </Grid>
-                            ))
-                        }
-                    </Grid>
+                                        <Typography variant='body1'>{truncate(food.description, 25)}</Typography>
+                                        <Typography variant='body2'>{food.area}</Typography>
+                                        <Typography variant='subtitle2'>{truncate(food.address, 30)}</Typography>
+
+                                        <Stack direction='column' justifyContent='space-between' sx={{ mt: '8px' }}>
+                                            <Box>
+                                                <IconButton
+                                                    variant='contained'
+                                                    color='primary'
+                                                    onClick={() => navigate(`/editFood/${food._id}`)}
+
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    onClick={() => handleDelete(food)}
+                                                    variant='contained'
+                                                    color='error'
+                                                >
+                                                    <DeleteIcon size="large" />
+                                                </IconButton>
+                                            </Box>
+                                            <Button
+                                                variant='contained'
+                                                size="small"
+                                                onClick={() => handleClick(food._id)}
+                                                endIcon={<VisibilityIcon fontSize='large' />}
+                                            >
+                                                Requests
+                                            </Button>
+                                        </Stack>
+                                    </Stack>
+                                </Paper>
+                            </Grid>
+                        ))
+                    }
                 </Grid>
             </Grid>
         </Container>

@@ -44,7 +44,7 @@ function RequestForm() {
         <Container sx={{pb:'2rem'}}>
             <Grid
                 container
-                sx={{ p: '0 32px' }}
+                sx={{ p: '0' }}
                 component='form'
                 onSubmit={handleSubmit}
                 spacing={1}

@@ -6,7 +6,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import Menu from './Menu';
 import { signout } from '../features/auth/authSlice';
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 
 export default function AppBar() {
@@ -14,7 +14,7 @@ export default function AppBar() {
     const dispatch = useDispatch()
     const { user } = useSelector(state => state.auth)
     const location = useLocation()
-    const handleSignin=()=>{
+    const handleSignin = () => {
         navigate('/signin')
     }
     console.log(location)
@@ -41,25 +41,44 @@ export default function AppBar() {
         }
     ]
     return (
-        <Box sx={{mb:`${location.pathname ==='/'? null : '32px'}`}}>
+        <Box sx={{ mb: `${location.pathname === '/' ? null : '32px'}` }}>
             <MuiAppBar position="fixed" color='secondary'>
                 <Toolbar>
                     <IconButton
-                        size="large"
+                        size="32"
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{ mr: 2 }}
+                        sx={{display: {sm:'none', margin:'0 8px 0 0', padding:'0'}}}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flex: 1, fontWeight: '600' }}>
-                        <Link style={{ textDecoration: 'none' }} to={'/'}>
-                            FOOD DONATION
-                        </Link>
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        onClick={()=>navigate('/')}
+                        sx={{
+                            flex: 1,
+                            fontWeight: '600',
+                            display:{xs:'none',sm:'block'}
+                        }}
+                    >
+                        FOOD DONATION
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        onClick={()=>navigate('/')}
+                        sx={{
+                            flex: 1,
+                            fontWeight: '600',
+                            display:{sm:'none'}
+                        }}
+                    >
+                        FD
                     </Typography>
 
-                    <Box component='div' sx={{ ml: 'auto' }}>
+                    <Box component='div' sx={{ ml: 'auto', display:{xs:'none', sm:'block'}}}>
                         {
                             user
                                 ? (
