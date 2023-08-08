@@ -12,6 +12,7 @@ function Hero() {
         mb: '20px',
         lineHeight: {sm:'72px'},
         color: '#333',
+        fontSize:'2.5rem',
     }
     return (
         <Grid container>

@@ -13,7 +13,7 @@ function Welcome() {
                 <Grid item md={6}>
                     <Typography variant='h4' sx={{mb:'32px'}}>Welcome To Our Donation Area</Typography>
                     <Typography variant='h6' sx={{mb:'32px'}}>
-                        Over 90% of the food distributed by fod banks in the Trussell Trust network is Donated by the puplic - that's why your food donations are absolutly vital to our ability to give everyone referred to us a balanced and nutritious three day supply of food. Without your goodwill, our food banks would really struggle to perate.
+                    Welcome to "Zero Hunger," a transformative platform where each plate holds the promise of positive change. With our user-friendly web application, you can play a vital role in tackling food wastage and hunger within our communities. By effortlessly connecting food donors with dedicated volunteers, we're on a mission to ensure that valuable sustenance reaches those who need it most. Join us today and be part of a movement that makes a difference—one meal, one connection at a time.
                     </Typography>
                     <Button variant='contained'>Read more</Button>
                 </Grid>
