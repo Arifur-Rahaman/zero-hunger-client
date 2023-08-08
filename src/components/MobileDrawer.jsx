@@ -27,7 +27,7 @@ const MobileDrawer = ({open, setOpen}) => {
                         <Stack direction={'row'} alignItems={'center'}>
                             {/* <BiCollapse size={36} style={{ marginRight: '0.5rem', color: `${colorPrimary}` }} /> */}
                             <Typography color={'secondary.contrastText'} variant="h6" component="div">
-                               Food Donation
+                               Zero-Hunger
                             </Typography>
                         </Stack>
                     </Link>

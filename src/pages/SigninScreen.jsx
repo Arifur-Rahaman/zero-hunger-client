@@ -1,4 +1,4 @@
-import { Container, Grid, TextField, Typography } from "@mui/material"
+import { Box, Card, Container, Grid, Stack, TextField, Typography } from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { signin } from "../features/auth/authSlice"
@@ -52,61 +52,67 @@ const SigninScreen = () => {
         return <Loader />
     }
     return (
-        <Container maxWidth='sm' component='form' onSubmit={handleSubmit}>
-            <Grid container rowSpacing={3}>
-                <Grid item xs={12}>
-                    <HeadingPrimary variant="h4">
-                        Sign in
-                    </HeadingPrimary>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        type='email'
-                        required
-                        placeholder="Email"
-                        label="Email"
-                        name='email'
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.email}
-                        error={touched.email && errors.email?.length > 0}
-                        helperText={touched.email && errors.email}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        type='password'
-                        required
-                        placeholder="Password"
-                        label="Password"
-                        name='password'
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.password}
-                        error={touched.password && errors.password?.length > 0}
-                        helperText={touched.email && errors.password}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <ButtonPrimary
-                        variant="contained"
-                        type="submit"
-                    >
-                        Sign in
-                    </ButtonPrimary>
-                </Grid>
-                <Grid item xs={12}>
-                    <Typography variant="subtitle1">
-                        Don't have an account?
-                        <LinkPrimary to='/signup' style={{ marginLeft: '1rem' }}>
-                            Sign up
-                        </LinkPrimary>
-                    </Typography>
-                </Grid>
-            </Grid>
-        </Container>
+        <Box sx={{ width: '100%', height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Container maxWidth='sm'>
+                <Card sx={{padding:'2rem'}}>
+                    <Grid container rowSpacing={3} component='form' onSubmit={handleSubmit}>
+                        <Grid item xs={12}>
+                            <HeadingPrimary variant="h4">
+                                Sign in
+                            </HeadingPrimary>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                type='email'
+                                required
+                                placeholder="Email"
+                                label="Email"
+                                name='email'
+                                size="small"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.email}
+                                error={touched.email && errors.email?.length > 0}
+                                helperText={touched.email && errors.email}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                type='password'
+                                required
+                                placeholder="Password"
+                                label="Password"
+                                name='password'
+                                size="small"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.password}
+                                error={touched.password && errors.password?.length > 0}
+                                helperText={touched.email && errors.password}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <ButtonPrimary
+                                variant="contained"
+                                type="submit"
+                            >
+                                Sign in
+                            </ButtonPrimary>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1">
+                                Don't have an account?
+                                <LinkPrimary to='/signup' style={{ marginLeft: '1rem' }}>
+                                    Sign up
+                                </LinkPrimary>
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </Card>
+            </Container>
+        </Box>
     );
 };
 

@@ -64,10 +64,11 @@ export default function AppBar() {
                         sx={{
                             flex: 1,
                             fontWeight: '600',
-                            display: { xs: 'none', sm: 'block' }
+                            display: { xs: 'none', sm: 'block' },
+                            cursor: 'pointer'
                         }}
                     >
-                        FOOD DONATION
+                        Zero-Hunger
                     </Typography>
                     <Typography
                         variant="h6"
@@ -80,16 +81,16 @@ export default function AppBar() {
                             cursor: 'pointer'
                         }}
                     >
-                        FD
+                        ZH
                     </Typography>
 
-                    <Box component='div' sx={{ ml: 'auto', display: { xs: 'none', sm: 'block' } }}>
+                    <Box component='div' sx={{ ml: 'auto', mr:'1rem', display: { xs: 'none', sm: 'block' } }}>
                         {
                             user
                                 ? (
                                     <Menu name={user?.name} menuItems={userItems} />
                                 ) : (
-                                    <Button onClick={handleSignin} sx={{ color: 'black' }}>Sign In</Button>
+                                    <Button variant='outlined' onClick={handleSignin} sx={{ color: 'black'}}>Sign In</Button>
                                 )
                         }
                     </Box>
